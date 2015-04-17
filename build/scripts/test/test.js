@@ -1,0 +1,1 @@
+define("scripts/test/test",[],function(a,b){b.each=function(a){},b.log=function(a){}});
