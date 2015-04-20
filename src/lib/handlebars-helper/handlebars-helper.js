@@ -1,4 +1,5 @@
 define(function(require, exports) {
+    var Handlebars = require('Handlebars');
     var isArray = function(value) {
         return Object.prototype.toString.call(value) === '[object Array]';
     }

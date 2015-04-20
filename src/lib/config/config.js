@@ -39,7 +39,7 @@
         comboSyntax: ["??", ","],
         comboMaxLength: 500,
         preload: [
-            "$","helper"
+            window.$ || window.jQuery ? '' :'$'
         ],
         map: [],
         charset: 'utf-8',
