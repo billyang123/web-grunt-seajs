@@ -1,4 +1,5 @@
 define(function(require, exports) {
+	var $ = require("$");
   exports.each = function (arr) {
     // 实现代码
   };
@@ -6,4 +7,7 @@ define(function(require, exports) {
   exports.log = function (str) {
     // 实现代码
   };
+  exports.test = function(){
+  	$("body").html("测试")
+  }
 });

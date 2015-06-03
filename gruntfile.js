@@ -1,6 +1,6 @@
 var fs = require("fs");
 var path = require("path");
-
+var assetsPath = "../assets";
 module.exports = function(grunt) {
 
     var configFile = grunt.option("config");
@@ -45,7 +45,7 @@ module.exports = function(grunt) {
             files: [
                 {
                     src: ["**/*.js"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".js",
                     cwd: "src",
@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.handlebars"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".handlebars.js",
                     cwd: "src",
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.css"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".css.js",
                     cwd: "src",
@@ -74,7 +74,7 @@ module.exports = function(grunt) {
     config.cmd_concat = {
         options: {
             paths: [
-                path.normalize(path.join(__dirname,  "build"))
+                path.normalize(path.join(__dirname,  assetsPath))
             ],
             logLevel: "WARNING",
             useCache: true,
@@ -85,10 +85,10 @@ module.exports = function(grunt) {
             files: [
                 {
                     src: ["**/*.js"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
 //                    ext: ".js",
-                    cwd: "build",
+                    cwd: assetsPath,
                     filter: "isFile"
                 }
             ]
@@ -110,10 +110,10 @@ module.exports = function(grunt) {
             files: [
                 {
                     src: ["**/*.js"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".js",
-                    cwd: "build",
+                    cwd: assetsPath,
                     filter: function(file) {
                         var stats = fs.lstatSync(file);
                         return stats.isFile() && !/\-debug\.*\.js$/.test(file);
@@ -136,15 +136,15 @@ module.exports = function(grunt) {
         release: {
             files: [
                 {
-                    src: ["src/styles/*.less"],
-                    dest: "build/styles/app.css"
+                    src: "src/styles/app.less",//"src/styles/**/*.less",
+                    dest: assetsPath+"/styles/app.css"
                 }
             ]
         },
         develop: {
             files: [
                 {
-                    src: ["src/styles/*.less"],
+                    src: "src/styles/app.less",
                     dest: "src/styles/app.css"
                 }
             ]
@@ -161,7 +161,7 @@ module.exports = function(grunt) {
             files: [
                 {
                     src: ["**/*.css"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".css",
                     cwd: "src",
@@ -177,7 +177,7 @@ module.exports = function(grunt) {
             files: [
                 {
                     src: ["**/*.png"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".png",
                     cwd: "src",
@@ -185,7 +185,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.jpg"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".jpg",
                     cwd: "src",
@@ -193,7 +193,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.jpeg"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".jpeg",
                     cwd: "src",
@@ -201,7 +201,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.gif"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".gif",
                     cwd: "src",
@@ -209,7 +209,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.eot"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".eot",
                     cwd: "src",
@@ -217,7 +217,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.svg"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".svg",
                     cwd: "src",
@@ -225,7 +225,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.ttf"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".ttf",
                     cwd: "src",
@@ -233,7 +233,7 @@ module.exports = function(grunt) {
                 },
                 {
                     src: ["**/*.woff"],
-                    dest: "build",
+                    dest: assetsPath,
                     expand: true,
                     ext: ".woff",
                     cwd: "src",
@@ -261,7 +261,7 @@ module.exports = function(grunt) {
     // watch for develop
     config.watch = {
         develop: {
-            files: ["src/styles/*.less","src/**/**/*.less"],
+            files: ["src/styles/**/*.less"],
             tasks: ["less:develop"]
         }
         // ,

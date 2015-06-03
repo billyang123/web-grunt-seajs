@@ -1,0 +1,68 @@
+.renhe-nav {
+	background-color: #313131;
+
+	.renhe-logo {
+		padding: 12px 0;
+	}
+	.navbar-inverse {
+		min-height: 75px;
+		border-radius: 0;
+		.navbar-nav > li > a {
+			font-size: 16px;
+			&:hover > .rh-arrow {
+				display: inline-block;
+			}
+		}
+		.navbar-nav > .active > a {
+			background-color: transparent;
+			> .rh-arrow {
+				display: inline-block;
+			}
+		}
+		.navbar-toggle {
+			margin-top: 20px;
+		}
+		.navbar-collapse {
+			padding-top: 14px;
+			max-width: 968px;
+		}
+		.navbar-brand {
+			height: auto;
+		}
+		.navbar-form {
+			.input-group {
+				background-color: #424242;
+				border-radius: 20px;
+			}
+			input.form-control {
+				border-radius: 20px;
+				background-color: #424242;
+				border: 0;
+				color: #a0a0a0;
+				box-shadow: inherit;
+				&:focus {
+					border: 0;
+					outline: 0;
+					box-shadow: inherit;
+				}
+			}
+			.btn-link {
+				color: #a9a8a8;
+				&:hover,&:active,&:visited,&:focus {
+					text-decoration: none;
+					outline: 0;
+				}
+			}
+		}
+		.rh-arrow {
+			display: none;
+			position: absolute;
+			border:8px solid transparent;
+			border-bottom-color: #eeeeee;
+			top: 45px;
+			left: 50%;
+			margin-left: -8px;
+		}
+	}
+
+}

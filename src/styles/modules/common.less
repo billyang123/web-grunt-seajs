@@ -1,0 +1,53 @@
+@import "mixins.less";
+.no-border {
+	border: 0 !important;
+	&:focus {
+		border: 0 !important;
+		outline: 0;
+	}
+}
+.text-yellow {
+	color: #f1aa38;
+}
+.text-purple-1 {
+	color: #844592;
+}
+.text-purple {
+	color: #ac57e9;
+}
+.text-overflow {
+	.text-overflow();
+}
+.clearfix:after { 
+    visibility: hidden; 
+    display: block; 
+    font-size: 0; 
+    content: " "; 
+    clear: both; 
+    height: 0; 
+} 
+.clearfix{*zoom:1;}
+.rh-margin-left {
+	margin-left: 25px;
+}
+.fileinput-button{
+	position: relative;
+  	overflow: hidden;
+	input {
+	  position: absolute;
+	  top: 0;
+	  right: 0;
+	  margin: 0;
+	  opacity: 0;
+	  -ms-filter: 'alpha(opacity=0)';
+	  font-size: 200px;
+	  direction: ltr;
+	  cursor: pointer;
+	}
+}
+.mt20 {
+	margin-top: 20px !important;
+}
+.mr5 {
+	margin-right: 5px;
+}
