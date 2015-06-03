@@ -14,10 +14,12 @@
             "tab":'plugins/bootstrap/tab',
             "collapse":'plugins/bootstrap/collapse',
             "alert":'plugins/bootstrap/alert'
+            
         },
         paths: {
             //testPath: 'apps/test',
             utilsPath: 'utils',
+            jqueryui: '"http://devww.renhe.cn/plugins/jqueryui',
             lib: "http://devww.renhe.cn/lib",
             plugins:"http://devww.renhe.cn/plugins",
             scripts:"http://devww.renhe.cn/scripts"
