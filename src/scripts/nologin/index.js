@@ -8,10 +8,10 @@ define(function(require, exports, module) {
 	$.validator.setDefaults({
 	   debug: true
 	})
-	$.validator.addMethod("renheEmail", function(value, element, param) {    
-	  	var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/; 
-		return reg.test(value); 
-	}, "请输入正确格式的邮箱！");
+	$.validator.addMethod("renheAccount", function(value, element, param) {
+		var reg = /(^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+)|((86)*0*13\d{9})/		
+		return reg.test(value);
+	});
 	/* 设置默认属性 */    
 	$.validator.setDefaults({    
 		submitHandler: function(form) { form.submit(); },
@@ -38,10 +38,12 @@ define(function(require, exports, module) {
 	})
 	var validateMessage = {         
 	    email:{     
-	        required: "请输入一个邮箱地址"
+	        required: "请输入一个邮箱地址",
+	        renheAccount:"请输入正确的邮箱或手机号码！"
 	    },     
 	    password:{     
-	        required: "请输入您的邮箱密码"   
+	        required: "请输入您的邮箱密码",
+	        minlength:"密码必须大于6位"
 	    }
 	}
 	// var rmck = $('.js-rember');
