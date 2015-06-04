@@ -1,25 +1,5 @@
 define(function(require, exports, module) {
-	require('jqueryui/widget');
-(function (factory) {
-    'use strict';
-    if (typeof define === 'function' && define.amd) {
-        // Register as an anonymous AMD module:
-        define([
-            'jquery',
-            'jquery.ui.widget'
-        ], factory);
-    } else if (typeof exports === 'object') {
-        // Node/CommonJS:
-        factory(
-            require('jquery'),
-            require('./vendor/jquery.ui.widget')
-        );
-    } else {
-        // Browser globals:
-        factory(window.jQuery);
-    }
-}(function ($) {
-    'use strict';
+	var $ = require('$')
 
     // Detect file input support, based on
     // http://viljamis.com/blog/2012/file-upload-support-on-mobile/
@@ -1451,6 +1431,4 @@ define(function(require, exports, module) {
         }
 
     });
-
-}));
 })

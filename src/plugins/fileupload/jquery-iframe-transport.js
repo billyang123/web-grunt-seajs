@@ -11,21 +11,8 @@ define(function(require, exports, module) {
  */
 
 /* global define, require, window, document */
+	var $ = require('$')
 
-(function (factory) {
-    'use strict';
-    if (typeof define === 'function' && define.amd) {
-        // Register as an anonymous AMD module:
-        define(['jquery'], factory);
-    } else if (typeof exports === 'object') {
-        // Node/CommonJS:
-        factory(require('jquery'));
-    } else {
-        // Browser globals:
-        factory(window.jQuery);
-    }
-}(function ($) {
-    'use strict';
 
     // Helper variable to create unique names for the transport iframes:
     var counter = 0;
@@ -215,5 +202,4 @@ define(function(require, exports, module) {
         }
     });
 
-}));
 })
