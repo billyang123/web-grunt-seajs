@@ -5,7 +5,9 @@ define(function(require, exports, module) {
 	require('jquery.fileupload');
 	require('jquery.iframe-transport');
 	require('carousel');
-	var Handlebars = require('handlebars');
+	require('ajaxRails');
+	var upload_temp = require('./uploadTemp');
+	var fileNum = 0;
 	var default_settings = {
 		title:"",
 		draggable: false,
@@ -90,11 +92,15 @@ define(function(require, exports, module) {
 				position: {
 					of: els
 				},
-				create:function( event, ui ) {self.uploadInit();}
+				create:function( event, ui ) {self.uploadInit();},
+				close: function( event, ui ) {
+					fileNum = 0;
+					$('[class*="fileid-"]').remove();
+				}
 			})
-			var source   = $('#upload-template').html();
-			var template = Handlebars.compile(source);
-			self.DGS["upload"] = $( template() ).dialog(options);
+			//var source   = $('#upload-template').html();
+			//var template = Handlebars.compile(source);
+			self.DGS["upload"] = $( upload_temp.join('') ).dialog(options);
 		},
 		innerFace:function(AddFaceEle,event,ui){
 			var self = this;
@@ -135,34 +141,44 @@ define(function(require, exports, module) {
 				return;
 			}
 			self.faceDGSId = addFacePicId;
-			$.get("./face.php",function(text){
-				self.DGS["face"]= $( text ).dialog(options);
+			$.ajax({
+				url:$(els).attr("href"),
+				dataType:"text",
+				success:function(text){
+					self.DGS["face"]= $( text ).dialog(options);
+				}
 			})
 		},
 		uploadInit:function(){
-			var url = window.location.hostname === 'blueimp.github.io' ?
-	        '//jquery-file-upload.appspot.com/' : 'upload.json';
+			var url = '/uploadfile.htm';
 		    $('#fileupload').fileupload({
 		        url: url,
 		        dataType: 'json',
-		        done: function (e, data) {
-		          console.log(e,data)
-		            // $.each(data.result.files, function (index, file) {
-		            //     $('<p/>').text(file.name).appendTo('#files');
-		            // });
+		        add: function (e, data) {
+		        	console.log(e, data)
+		        	var str = '';
+		        	
+		        	$.each(data.files,function(index,item){
+		        		fileNum +=1;
+		        		str+='<li class="fileid-'+fileNum+'"><p class="text-center"><i class="icon-spinner icon-spin"></i></p><p class="text-overflow">'+item.name+'</p></li>';
+		        		
+		        	})
+		        	$(this).closest('li').before(str)
+		            //data.context = $('<p/>').text('Uploading...').appendTo(document.body);
+		            data.submit();
 		        },
 		        progressall: function (e, data) {
 		            var progress = parseInt(data.loaded / data.total * 100, 10);
-		            $('#progress .progress-bar').css(
-		                'width',
-		                progress + '%'
-		            );
+		            console.log(e, data)
 		        }
-		    }).prop('disabled', !$.support.fileInput)
-		        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+		    }).on('fileuploaddone',function(e, data){
+		    	$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).html('<div><a href="#" class="delimg icon-remove"></a><img src="'+data.result.fileurl+'"/></div>')
+		    	$(e.currentTarget).closest('.upload-img-popover').find('[node-type="filenum"]').text(fileNum).siblings('[node-type="yetfilenum"]').text(8-fileNum);
+		    })
 		},
 		addMessageBoardFacePic:function(e){
 			this.faceOvery(e.target);
+			return false;
 		},
 		showUploadProver:function(e){
 			this.uploadOvery(e.target);

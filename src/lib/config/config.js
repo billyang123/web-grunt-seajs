@@ -19,7 +19,7 @@
             "jquery.ui":'plugins/jqueryui/jqueryui',
             "jquery.fileupload":'plugins/fileupload/jqueryfileupload',
             "jquery.iframe-transport":'plugins/fileupload/jquery-iframe-transport',
-            
+            "ajaxRails":'plugins/jquery-ujs/jquery-ujs.js'
             
         },
         paths: {
