@@ -54,6 +54,7 @@
  * @see metadata()
  */
 define(function(require, exports) {
+	var jQuery = require("$");
 (function($) {
 
 $.extend({

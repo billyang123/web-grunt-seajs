@@ -7,12 +7,13 @@
         alias: {
             // plugins
             "handlebars": 'plugins/handlebars/handlebars-1-0-2',
-            "$": assetsPath+'lib/jquery/jquery-1-8-3',
+            "$": assetsPath+'lib/jquery/jquery-1-7-1-gbk-min.js',
             "jQuery": assetsPath+'lib/jquery/jquery-1-8-3',
             "metadata": 'plugins/jquery-metadata/jquery-metadata',
             'jquery-validate':'plugins/jquery-validate/jquery-validate',
             "tab":'plugins/bootstrap/tab',
             "collapse":'plugins/bootstrap/collapse',
+            "dropdown":'plugins/bootstrap/dropdown',
             "alert":'plugins/bootstrap/alert',
             "carousel":'plugins/bootstrap/carousel',
             "transition":'plugins/bootstrap/transition',
@@ -34,7 +35,7 @@
             '$'
         ],
         map: [],
-        charset: 'utf-8',
+        charset: 'gbk',
         timeout: 20000,
         debug: true
     };

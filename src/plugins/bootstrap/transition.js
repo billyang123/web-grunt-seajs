@@ -7,12 +7,7 @@
  * ======================================================================== */
 
 define(function(require, exports, module) {
-+function ($) {
-  'use strict';
-
-  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
-  // ============================================================
-
+var $ = require("$");
   function transitionEnd() {
     var el = document.createElement('bootstrap')
 
@@ -56,5 +51,4 @@ define(function(require, exports, module) {
     }
   })
 
-}(jQuery);
 })

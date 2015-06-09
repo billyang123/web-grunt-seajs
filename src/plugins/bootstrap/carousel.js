@@ -7,13 +7,8 @@
  * ======================================================================== */
 
 define(function(require, exports, module) {
+	var $ = require("$");
 	require('transition');
-	+function ($) {
-	  'use strict';
-	
-	  // CAROUSEL CLASS DEFINITION
-	  // =========================
-	
 	  var Carousel = function (element, options) {
 	    this.$element    = $(element)
 	    this.$indicators = this.$element.find('.carousel-indicators')
@@ -234,6 +229,4 @@ define(function(require, exports, module) {
 	      Plugin.call($carousel, $carousel.data())
 	    })
 	  })
-	
-	}(jQuery);
 })

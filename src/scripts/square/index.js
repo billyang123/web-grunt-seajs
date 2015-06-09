@@ -4,8 +4,9 @@ define(function(require, exports, module) {
 	require('scripts/widget/picshow')
 	require('jquery.fileupload');
 	require('jquery.iframe-transport');
-	require('carousel');
+	require("carousel");
 	require('ajaxRails');
+	var Handlebars = require('handlebars')
 	var upload_temp = require('./uploadTemp');
 	var fileNum = 0;
 	var default_settings = {
@@ -42,7 +43,9 @@ define(function(require, exports, module) {
 			'[action-type="showUploadProver"] click':'showUploadProver',
 			'[action-type="addMessageBoardFacePic"] click':'addMessageBoardFacePic',
 			'[action-type="showWordLimt"] keyup':'textareaLimit',
-			'[action-type="transmitTo"] click':'transmitTo'
+			'[action-type="transmitTo"] click':'transmitTo',
+			'[action-type="removeFile"] click':'removeFile',
+			'#weiboShareCheckbox click':'weiboShare'
 		},
 		init:function(){
 			var self = this;
@@ -51,11 +54,34 @@ define(function(require, exports, module) {
 				self.element.delegate(nbs[0],nbs[1],(typeof(itemFn) == 'function')?itemFn:$.proxy(self,itemFn));
 			})
 		},
+		removeFile:function(e){
+			var _this = $(e.target);
+			$.ajax({
+				url:_this.attr('href'),
+				type:"POST",
+				dataType:"json",
+				success:function(d){
+					if(d.success){
+						_this.closest('li').remove();
+					}
+				}
+			});
+			return false;
+		},
+		qqWeiboShare:function(e){
+			var _this = e.target;
+			var syncQqWeiboLivingRoom = $(_this).prop('checked');
+			jQuery.post('/ajax/changeSyncQqWeiboLivingRoom.html', {syncQqWeiboLivingRoom: syncQqWeiboLivingRoom});
+		},
+		weiboShare:function(){
+			window.open('/weibo/authCall.html?sender=6783482&syncLivingRoom=true','','toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=400,left=400,top=200');
+	    	  return false;
+		},
 		transmitTo:function(e){
 			var source   = $('#transmit-template').html();
 			var transmitTemplate = Handlebars.compile(source);
 			$( transmitTemplate() ).dialog({
-		      title: "\u5206\u4EAB\u7559\u8A00",
+		      title: '\u5206\u4EAB\u7559\u8A00',
 		      width:446,
 		      buttons: [
 		        {
@@ -172,7 +198,7 @@ define(function(require, exports, module) {
 		            console.log(e, data)
 		        }
 		    }).on('fileuploaddone',function(e, data){
-		    	$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).html('<div><a href="#" class="delimg icon-remove"></a><img src="'+data.result.fileurl+'"/></div>')
+		    	$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).html('<div><a href="/deletefile.htm" class="delimg icon-remove" action-type="removeFile"></a><img src="'+data.result.fileurl+'"/></div>')
 		    	$(e.currentTarget).closest('.upload-img-popover').find('[node-type="filenum"]').text(fileNum).siblings('[node-type="yetfilenum"]').text(8-fileNum);
 		    })
 		},
@@ -185,5 +211,5 @@ define(function(require, exports, module) {
 		}
 	
 	}
-	new renheWidget('.renhe-square-main');
+	new renheWidget('body');
 })
