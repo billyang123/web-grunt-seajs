@@ -16,6 +16,7 @@
             "dropdown":'plugins/bootstrap/dropdown',
             "alert":'plugins/bootstrap/alert',
             "carousel":'plugins/bootstrap/carousel',
+            "owlcarousel":'plugins/owl-carousel/carousel',
             "transition":'plugins/bootstrap/transition',
             "jquery.ui":'plugins/jqueryui/jqueryui',
             "jquery.fileupload":'plugins/fileupload/jqueryfileupload',
@@ -26,7 +27,7 @@
         paths: {
             utilsPath: 'utils',
             
-            // ä¸šåŠ¡æ¨¡å—
+            // ÒµÎñÄ£¿é
 
         },
         comboSyntax: ["??", ","],

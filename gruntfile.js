@@ -1,8 +1,9 @@
 var fs = require("fs");
 var path = require("path");
+//var iconv = require('iconv-lite');
 var assetsPath = "../assets";
 module.exports = function(grunt) {
-
+	grunt.file.defaultEncoding = 'gbk';
     var configFile = grunt.option("config");
     var isBeautify = grunt.option("isBeautify");
     if (!configFile) {
@@ -16,7 +17,8 @@ module.exports = function(grunt) {
         return;
     }
 
-    var configFileContent = fs.readFileSync(configFile, "utf-8");
+    var configFileContent = fs.readFileSync(configFile,"utf-8");
+    //configFileContent = iconv.decode(configFileContent)
     configFileContent = eval(configFileContent);
 
      var config = {};
@@ -33,7 +35,7 @@ module.exports = function(grunt) {
             alias: configFileContent.alias,
             aliasPaths: configFileContent.paths,
             handlebars: {
-                id: 'alinw/handlebars/1.3.0/runtime',
+                id: 'plugins/handlebars/handlebars-1-0-2',
                 knownHelpers: [
                     "if",
                     "each",
@@ -270,9 +272,9 @@ module.exports = function(grunt) {
         //     tasks: ["jade:compile"]
         // } 
     };
-
+    
     grunt.initConfig(config);
-
+    
     grunt.loadNpmTasks("grunt-cmd-nice");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-less");

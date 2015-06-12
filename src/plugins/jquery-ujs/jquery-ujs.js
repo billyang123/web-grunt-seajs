@@ -453,5 +453,78 @@ define(function(require, exports) {
       rails.refreshCSRFTokens();
     });
   }
+  var $document;
 
+  $document = $(document);
+
+  $document.on('ajax:success', '[data-done], [data-target]', function(evt, res) {
+    var $res, $self, done, hasIn, self, target;
+    if (this !== evt.target) {
+      return;
+    }
+    self = this;
+    $self = $(this);
+    $res = $(res);
+    target = $self.data('target');
+    done = $self.data('done');
+    hasIn = $res.hasClass('in');
+    if (hasIn) {
+      $res.removeClass('in');
+    }
+    if (target) {
+      $res.appendTo(target);
+    }
+    if (done) {
+      (new Function('res', 'r', '$r', done)).call(self, res, res, $res);
+    }
+    if (hasIn) {
+      $res.prop('offsetWidth');
+    }
+    if (hasIn) {
+      $res.addClass('in');
+    }
+    if ($self.is('form')) {
+      return $self[0].reset();
+    }
+  });
+
+  $document.on('ajax:send', 'a[data-remote], form[data-remote], button', function(evt) {
+    var $this;
+    if (this !== evt.target) {
+      return;
+    }
+    $this = $(this);
+    if ($this.is('form')) {
+      return $this.find(':submit:enabled').attr('disabled', 'disabled').attr('data-disabled-by', 'ajax');
+    } else if ($this.is(':enabled')) {
+      return $this.attr('disabled', 'disabled');
+    } else {
+      return $this.addClass('disabled');
+    }
+  });
+
+  $document.on('ajax:complete', 'a[data-remote], form[data-remote], button', function(evt) {
+    var $this;
+    if (this !== evt.target) {
+      return;
+    }
+    $this = $(this);
+    if ($this.is('form')) {
+      return $this.find(':submit:disabled[data-disabled-by=ajax]').removeAttr('disabled').removeAttr('data-disabled-by');
+    } else if ($this.is(':disabled')||$this.is('[disabled="disabled"]')) {
+      return $this.removeAttr('disabled');
+    } else {
+      $this.removeClass('disabled');
+      if ($this.is('[data-remote-once=true]')) {
+        $this.removeAttr('data-remote');
+        return $this.on('click', function(evt) {
+          return evt.preventDefault();
+        });
+      }
+    }
+  });
+
+  $(window).on('beforeunload', function() {
+    $document.off('ajax:error');
+  });
 })

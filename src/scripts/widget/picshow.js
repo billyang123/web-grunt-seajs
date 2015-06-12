@@ -1,6 +1,29 @@
 define(function(require, exports, module) {
 var jQuery = require("$");
 var Handlebars = require('handlebars');
+jQuery.fn.extend({
+	rotate: function (deg) {
+		// cache dom element
+		var $this = jQuery(this);
+	
+		// make deg random if not set
+		if (deg === null) {
+			deg = Math.floor(Math.random() * 359);
+		}
+	
+		// rotate dom element
+		$this.css({
+			'-webkit-transform': 'rotate(' + deg + 'deg)',
+			'-moz-transform': 'rotate(' + deg + 'deg)',
+			'-ms-transform': 'rotate(' + deg + 'deg)',
+			'-o-transform': 'rotate(' + deg + 'deg)',
+			'transform': 'rotate(' + deg + 'deg)'
+		});
+	
+		// make chainable
+			return $this;
+	}
+});
 (function($){
 	var source   = $("#showpic-template").html();
 	var template = Handlebars.compile(source);
@@ -34,37 +57,34 @@ var Handlebars = require('handlebars');
         	obj.Enode.show();
         }
         obj.toBig = function(){
+        	obj.arginit();
         	obj.Enode.hide();
+        	obj.showPicBox.css("width",obj.showPicBox.width());
         	obj.showPicBox.html(template()).show();
-            obj.showPicBox.find('[action-type="tosmall"]').click(function(){obj.tosmall()});
-            obj.arginit();//初始化数据
-            obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li');
-            obj.csNode = obj.initNode();
+            obj.showPicBox.find('[action-type="tosmall"]').click(function(){obj.tosmall()});   
         	obj.mouseInit(obj.showPicBox.find('[node-type="picShow"]'));
             obj.eventInit();
             obj.directionIndex(obj.index);
         }
 
         obj.toLeft = function(){
-            obj.index = obj.index>0? (obj.index-1) : 0;
-            obj.directionIndex(obj.index);
+            var index = obj.index>0? (obj.index-1) : 0;
+            obj.directionIndex(index);
         }
         obj.toRight = function(){
-            obj.index = obj.index<obj.len? (obj.index+1) : obj.len;
-            obj.directionIndex(obj.index);
-        }
-        obj.initNode = function(){
-            var idxArr = [];
-            obj.showPicBox.find('[node-type="picChooseShow"] .item').each(function(index,item){
-                var sx = $(item).find('a');
-                idxArr.push(sx);
-                obj.len = obj.len + sx.length;
-            })
-            return idxArr;
+        	var index = obj.index<obj.len? (obj.index+1) : obj.len;
+            obj.directionIndex(index);
         }
         obj.eventInit = function(){
             var angle = 0;
-            obj.showPicBox.find('[node-type="picChooseShow"]').find('.item a').click(function(){
+            
+            
+            if(obj.showPicBox.find('[node-type="mediaShowImg"]').length>0){
+            	obj.carouselInit();
+            }
+            var smlis = obj.showPicBox.find('[node-type="mediaShowImg"] .owl-item a');
+            obj.len = smlis.length;
+            smlis.click(function(){
                 obj.directionIndex($(this).data('index'));
             });
             obj.showPicBox.find('[action-type="trunLeft"]').click(function(){
@@ -76,17 +96,33 @@ var Handlebars = require('handlebars');
                 obj.imgbox.find('img').rotateRight(angle);
             })
         }
-        obj.directionIndex = function(index){
-            var _number = Math.floor(index/obj.csNode[obj.xy['x']].length);
-            var _idx = (index%obj.csNode[obj.xy['x']].length);
-            var _src = $(obj.csNode[_number][_idx]).data("action-src");
-            obj.showPicBox.find('[data-ride="carousel"]').carousel(_number);
-            $(obj.csNode[obj.xy['x']][obj.xy['y']]).removeClass('select');
-            $(obj.csNode[_number][_idx]).addClass('select');
-            obj.imgbox.html('<img src="'+_src+'" width="548">');
+        obj.carouselInit = function(){
+        	var self = this;
+        	this.owlpicshow = $('[node-type="mediaShowImg"]');
+        	this.owlpicshow.owlCarousel({
+				items : 9,
+				itemsDesktop : [1199,6],
+				itemsDesktopSmall : [990,9],
+				pagination:false
+			});
+			$('[action-type="picshowNext"]').click(function(){
+				self.owlpicshow.trigger('owl.next');
+			})
+			$('[action-type="picshowPrev"]').click(function(){
+				self.owlpicshow.trigger('owl.prev');
+			})
+        }
+        obj.directionIndex = function(index,callback){ 
+        	var owl = this.owlpicshow.data('owlCarousel');
+        	var node_alis = obj.showPicBox.find('[node-type="mediaShowImg"] .owl-item a');
+        	var _src = $(node_alis[index]).data("action-src");
+        	owl.jumpTo(Math.floor(index/owl.orignalItems));
+        	$(node_alis[obj.index]).removeClass("select");
+        	$(node_alis[index]).addClass('select');
+        	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+_src+'" width="548">');
             obj.showPicBox.find('[action-type="seeBigPic"]').attr('href',_src);
-            obj.xy = {x:_number,y:_idx};
-
+            obj.index = index;
+            callback && typeof(callback) == "function" && callback(index);
         }
         obj.mouseInit = function(el){
         	

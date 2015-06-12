@@ -1,0 +1,10 @@
+@import "mixins.less";
+.animation {
+	&-slide-height {
+		height:0;
+		.transition(height .15s linear);
+		&.in {
+			height:auto;
+		}
+	}
+}

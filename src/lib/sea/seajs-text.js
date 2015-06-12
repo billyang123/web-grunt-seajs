@@ -118,13 +118,13 @@
 
     function xhr(url, callback) {
         var r = null;
-        // 2014-02-17 garcia.wul å› ä¸ºåˆ‡æ¢åˆ°CDNåï¼Œxhråœ¨IE8ä¸‹ä¸èƒ½è·¨åŸŸï¼Œä½†å¯ä»¥ä½¿ç”¨XDomainRequest
+        // 2014-02-17 garcia.wul ÒòÎªÇĞ»»µ½CDNºó£¬xhrÔÚIE8ÏÂ²»ÄÜ¿çÓò£¬µ«¿ÉÒÔÊ¹ÓÃXDomainRequest
         if (global.XDomainRequest) {
             r = new XDomainRequest();
             r.onload = function(e) {
                 callback(r.responseText);
             };
-            // 2014-02-18 garcia.wul IE9éœ€è¦åŠ ä¸Šè¿™äº›ï¼Œä¸ç„¶ä¼šåˆ·ä¸å‡ºé¡µé¢ï¼Œä¸çŸ¥é“ä¸ºä»€ä¹ˆ
+            // 2014-02-18 garcia.wul IE9ĞèÒª¼ÓÉÏÕâĞ©£¬²»È»»áË¢²»³öÒ³Ãæ£¬²»ÖªµÀÎªÊ²Ã´
             r.onerror = function() {};
             r.onprogress = function() {};
             r.ontimeout = function() {};

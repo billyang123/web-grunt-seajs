@@ -30,11 +30,28 @@
 			height: auto;
 		}
 		.navbar-setting {
+			position: relative;
 			padding: 10px 0 10px 15px;
 			> .seticon {
 				font-size: 20px;
 				text-decoration: none;
 				color:#fff;
+			}
+			.dropdown-menu {
+				min-width:105px;
+				top:87%;
+			}
+			.sarow {
+				width:0;
+				height:0;
+				line-height:0;
+				position: absolute;
+				border: 15px solid transparent;
+				border-left: 15px solid #313131;
+				border-bottom: 10px solid #fff;
+				z-index: 10000;
+				top: -10px;
+  				right: 3px;
 			}
 		}
 		.navbar-form {

@@ -4,10 +4,12 @@ define(function(require, exports, module) {
 	require('scripts/widget/picshow')
 	require('jquery.fileupload');
 	require('jquery.iframe-transport');
-	require("carousel");
 	require('ajaxRails');
-	var Handlebars = require('handlebars')
-	var upload_temp = require('./uploadTemp');
+	require('owlcarousel');
+	require('dropdown');
+	//var Handlebars = require('handlebars');
+	//var upload_temp = require('./uploadTemp');
+	var upload_temp = require('./uploadTemp.handlebars');
 	var fileNum = 0;
 	var default_settings = {
 		title:"",
@@ -26,25 +28,30 @@ define(function(require, exports, module) {
 		self.faceDGSId = false;
 		self.DGS = {};
 		self.element = $(element);
+		self.carouselInit();
 		self.init();
 	}
 	renheWidget.prototype = {
 		Event:{
-			'.js-emotion click':function(e){
-				$(e.target).sinaEmotion();
-	    		event.stopPropagation();
+			'button[type!="submit"] click':function(e){
+				 e.preventDefault();
 			},
-			'[action-type="willcommit"] click':function(e){
-				$(e.target).closest('.min-article').find('textarea').focus();
-			},
-			'[action-type="willSubCommit"] click':function(e){
-				$(e.target).closest('.min-article').find('textarea').val('\u56DE\u590D@'+$(e.target).data('atmsgname')+':');
-			},
+			'[action-type="willcommit"] click':'willcommit',
+			'[action-type="willSubCommit"] click':'willSubCommit',
 			'[action-type="showUploadProver"] click':'showUploadProver',
 			'[action-type="addMessageBoardFacePic"] click':'addMessageBoardFacePic',
 			'[action-type="showWordLimt"] keyup':'textareaLimit',
 			'[action-type="transmitTo"] click':'transmitTo',
 			'[action-type="removeFile"] click':'removeFile',
+			'[action-type="CommitCancel"] click':'CommitCancel',
+			'[action-type="addtopic"] ajax:success':'addtopic',
+			'[action-type="CommitSend"] ajax:success':'CommitSend',
+			'[action-type="CommitDel"] ajax:success':'CommitDel',
+			'[action-type="networkrefresh"] ajax:success':'networkrefresh',
+			'[action-type="networkrefresh"] ajax:send':'beforenetworkrefresh',
+			'[action-type="Commit"] focus':'Commitfocus',
+			'[action-type="doSignin"] ajax:success':'setcoin',
+			'[action-type="commitAngletoggle"] click':'commitAngletoggle',
 			'#weiboShareCheckbox click':'weiboShare'
 		},
 		init:function(){
@@ -53,6 +60,73 @@ define(function(require, exports, module) {
 				var nbs = index.split(' ')
 				self.element.delegate(nbs[0],nbs[1],(typeof(itemFn) == 'function')?itemFn:$.proxy(self,itemFn));
 			})
+		},
+		commitAngletoggle:function(e){
+			$(e.target).toggle(
+				function () {
+				   $(this).addClass("icon-double-angle-down").removeClass('icon-double-angle-up');
+				},
+				function () {
+				   $(this).removeClass("icon-double-angle-up").addClass('icon-double-angle-down');
+				}
+			);
+		},
+		setcoin:function(e,d){
+			var numnd = $('[node-type="coinNum"]');
+			var num = parseInt(numnd.attr("data-num"),10)+1;
+			numnd.attr("data-num",num).text(num);
+		},
+		willSubCommit:function(e){
+			$(e.target).closest('.min-article').find('textarea').val('\u56DE\u590D@'+$(e.target).data('atmsgname')+':').focus();
+		},
+		willcommit:function(e){
+			$(e.target).closest('.min-article').find('textarea').focus();
+		},
+		Commitfocus:function(e){
+			$(e.target).attr('rows',3).siblings(".commops").show();
+		},
+		beforenetworkrefresh:function(e){
+			$(e.target).find('.icon-refresh').addClass("icon-spin")
+		},
+		networkrefresh:function(e,text){
+			var apnode = $(e.target).find('.icon-refresh').removeClass("icon-spin").closest(".search-network").find("ul");
+			this.htmlFadeIn(apnode,text,"html")
+		},
+		CommitDel:function(e,text){
+			$(e.target).closest(".media-commont").remove();
+		},
+		htmlFadeIn:function(apnode,text,type){
+			var $res = $(text);
+			var node;
+			switch(type){
+				case 'prependTo':
+					node = $res.prependTo(apnode);
+				break;
+				case 'appendTo':
+					node = $res.appendTo(apnode);
+				break;
+				case 'html':
+					node = $res;
+					apnode.html($res)
+				break;
+			}
+			var hasIn = node.hasClass('in');
+			if(hasIn) node.removeClass('in');
+			setTimeout(function(){
+				if(hasIn) node.addClass('in');
+			},300)
+		},
+		CommitSend:function(e,text){
+			var apnode = $(e.target).closest('[node-type="minArticle"]').find('[node-type="commonts"]');
+			this.htmlFadeIn(apnode,text,"appendTo")
+		},
+		addtopic:function(e,text){
+			var apnode = $('[node-type="article"]');
+			this.htmlFadeIn(apnode,text,"prependTo")
+		},
+		CommitCancel:function(e){
+			var _this = $(e.target);
+			_this.closest('.commops').hide().siblings("textarea").attr("rows",1);
 		},
 		removeFile:function(e){
 			var _this = $(e.target);
@@ -68,6 +142,38 @@ define(function(require, exports, module) {
 			});
 			return false;
 		},
+		carouselInit:function(){
+			var owlcs = $("#carousel-rhhistry");
+			$("#carousel-rhbanner").owlCarousel({
+				autoPlay: 3000,
+				navigation : true, // Show next and prev buttons
+			    slideSpeed : 300,
+			    paginationSpeed : 400,
+			    singleItem:true,
+			    navigation:false,
+			    baseClass:"renhe-banner-carousel"
+			      // "singleItem:true" is a shortcut for:
+			  // items : 1, 
+			  // itemsDesktop : false,
+			  // itemsDesktopSmall : false,
+			  // itemsTablet: false,
+			  // itemsMobile : false
+			 
+			});
+			owlcs.owlCarousel({	 
+				autoPlay: 3000, //Set AutoPlay to 3 seconds
+				items : 4,
+				itemsDesktop : [1199,3],
+				itemsDesktopSmall : [979,3],
+				pagination:false
+			});
+			$('[action-type="histryNext"]').click(function(){
+				owlcs.trigger('owl.next');
+			})
+			$('[action-type="histryPrev"]').click(function(){
+				owlcs.trigger('owl.prev');
+			})
+		},
 		qqWeiboShare:function(e){
 			var _this = e.target;
 			var syncQqWeiboLivingRoom = $(_this).prop('checked');
@@ -81,17 +187,17 @@ define(function(require, exports, module) {
 			var source   = $('#transmit-template').html();
 			var transmitTemplate = Handlebars.compile(source);
 			$( transmitTemplate() ).dialog({
-		      title: '\u5206\u4EAB\u7559\u8A00',
+		      title: "分享留言",
 		      width:446,
 		      buttons: [
 		        {
-		          text: "\u5206\u4EAB",
+		          text: "分享",
 		          click: function() {
 		            $( this ).dialog( "close" );
 		          }
 		        },
 		        {
-		          text: "\u53D6\u6D88",
+		          text: "取消",
 		          click: function() {
 		            $( this ).dialog( "close" );
 		          }
@@ -113,7 +219,7 @@ define(function(require, exports, module) {
 				return;
 			}
 			var options = $.extend(true,default_settings,{
-				title: "\u4e0a\u4f20\u56fe\u7247",
+				title: "上传图片",
 				width:386,
 				position: {
 					of: els
@@ -126,7 +232,7 @@ define(function(require, exports, module) {
 			})
 			//var source   = $('#upload-template').html();
 			//var template = Handlebars.compile(source);
-			self.DGS["upload"] = $( upload_temp.join('') ).dialog(options);
+			self.DGS["upload"] = $( upload_temp() ).dialog(options);
 		},
 		innerFace:function(AddFaceEle,event,ui){
 			var self = this;
@@ -143,7 +249,7 @@ define(function(require, exports, module) {
 			var addFacePicId = $(els).attr("addFacePicId");
 			var AddFaceEle = $("#"+addFacePicId);
 			var options = $.extend(true,default_settings,{
-				title: '\u5e38\u7528\u8868\u60c5',
+				title: "常用表情",
 				width:542,
 				position: {
 					of: els
