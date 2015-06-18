@@ -512,14 +512,23 @@ define(function(require, exports) {
     if ($this.is('form')) {
       return $this.find(':submit:disabled[data-disabled-by=ajax]').removeAttr('disabled').removeAttr('data-disabled-by');
     } else if ($this.is(':disabled')||$this.is('[disabled="disabled"]')) {
-      return $this.removeAttr('disabled');
+      	if ($this.is('[data-remote-once=true]')) {
+	      $this.removeAttr('data-remote');
+	      return $this.on('click', function(evt) {
+	        return evt.preventDefault();
+	      });
+	    }else{
+	    	return $this.removeAttr('disabled');
+	    }
     } else {
-      $this.removeClass('disabled');
+      
       if ($this.is('[data-remote-once=true]')) {
         $this.removeAttr('data-remote');
         return $this.on('click', function(evt) {
           return evt.preventDefault();
         });
+      }else{
+    	  $this.removeClass('disabled');
       }
     }
   });

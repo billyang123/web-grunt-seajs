@@ -1,39 +1,72 @@
 define(function(require, exports, module) {
-var jQuery = require("$");
-var Handlebars = require('handlebars');
+var jQuery = require("$");  
 jQuery.fn.extend({
-	rotate: function (deg) {
-		// cache dom element
-		var $this = jQuery(this);
-	
-		// make deg random if not set
-		if (deg === null) {
-			deg = Math.floor(Math.random() * 359);
-		}
-	
-		// rotate dom element
-		$this.css({
-			'-webkit-transform': 'rotate(' + deg + 'deg)',
-			'-moz-transform': 'rotate(' + deg + 'deg)',
-			'-ms-transform': 'rotate(' + deg + 'deg)',
-			'-o-transform': 'rotate(' + deg + 'deg)',
-			'transform': 'rotate(' + deg + 'deg)'
-		});
-	
-		// make chainable
-			return $this;
+	rotate: function(angle,whence) {  
+	    var p = this.get(0);
+	    // we store the angle inside the image tag for persistence  
+	    if (!whence) {  
+	        p.angle = ((p.angle==undefined?0:p.angle) + angle) % 360;  
+	    } else {  
+	        p.angle = angle;  
+	    }  
+	  
+	    if (p.angle >= 0) {  
+	        var rotation = Math.PI * p.angle / 180;  
+	    } else {  
+	        var rotation = Math.PI * (360+p.angle) / 180;  
+	    }  
+	    var costheta = Math.round(Math.cos(rotation) * 1000) / 1000;  
+	    var sintheta = Math.round(Math.sin(rotation) * 1000) / 1000;  
+	    //alert(costheta+","+sintheta);  
+	   
+	    if (document.all && !window.opera) {  
+	        var canvas = document.createElement('img');  
+	  
+	        canvas.src = p.src;  
+	        canvas.height = p.height;  
+	        canvas.width = p.width;  
+	  
+	        canvas.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11="+costheta+",M12="+(-sintheta)+",M21="+sintheta+",M22="+costheta+",SizingMethod='auto expand')";  
+	    } else {  
+	        var canvas = document.createElement('canvas');  
+	        if (!p.oImage) {  
+	            canvas.oImage = new Image();  
+	            canvas.oImage.src = p.src;  
+	        } else {  
+	            canvas.oImage = p.oImage;  
+	        }  
+	  
+	        canvas.style.width = canvas.width = Math.abs(costheta*canvas.oImage.width) + Math.abs(sintheta*canvas.oImage.height);  
+	        canvas.style.height = canvas.height = Math.abs(costheta*canvas.oImage.height) + Math.abs(sintheta*canvas.oImage.width);  
+	  
+	        var context = canvas.getContext('2d');  
+	        context.save();  
+	        if (rotation <= Math.PI/2) {  
+	            context.translate(sintheta*canvas.oImage.height,0);  
+	        } else if (rotation <= Math.PI) {  
+	            context.translate(canvas.width,-costheta*canvas.oImage.height);  
+	        } else if (rotation <= 1.5*Math.PI) {  
+	            context.translate(-costheta*canvas.oImage.width,canvas.height);  
+	        } else {  
+	            context.translate(0,-sintheta*canvas.oImage.width);  
+	        }  
+	        context.rotate(rotation);  
+	        context.drawImage(canvas.oImage, 0, 0, canvas.oImage.width, canvas.oImage.height);  
+	        context.restore();  
+	    }  
+	    canvas.id = p.id;  
+	    canvas.angle = p.angle;  
+	    p.parentNode.replaceChild(canvas, p);  
+	},
+	rotateRight:function(angle) {  
+	    this.rotate(angle==undefined?90:angle);  
+	},
+	rotateLeft:function(angle) {  
+	    this.rotate(angle==undefined?-90:-angle);  
 	}
 });
 (function($){
-	var source   = $("#showpic-template").html();
-	var template = Handlebars.compile(source);
-    $.fn.rotateRight = function(angle) {
-        this.rotate(angle==undefined?90:angle); 
-    } 
-     
-    $.fn.rotateLeft = function(angle) { 
-        this.rotate(angle==undefined?-90:-angle); 
-    } 
+	var template = require('./showtemp.handlebars');
 	var picShowFn = function(element, useroptions){
         var obj = this;
 	    useroptions = (useroptions === undefined) ? {} : useroptions;
@@ -42,15 +75,26 @@ jQuery.fn.extend({
         }, useroptions);
         obj.Enode = $(options.element);
         obj.showPicBox = obj.Enode.siblings('[node-type="showPicBox"]');
-        
+        obj.lgimgId = new Date().getTime();
         obj.arginit = function(){
             obj.Direction = 'smallcursor';
-            obj.index = 0;
             obj.len = 0;
             obj.xy = {x:0,y:0};
+            options.data=[];
+            $(options.element).find("img").each(function(index,item){
+            	var imgSrc = $(item).attr("src");
+            	options.data.push({
+            		tiny:imgSrc,
+            		big:imgSrc.split("!")[0]
+            	})
+            })
         }
         obj.init = function() {
-        	obj.Enode.find('a').click(function(){obj.toBig()})
+        	var objlis = obj.Enode.find('a');
+        	objlis.click(function(){
+        		obj.index = objlis.index(this);
+        		obj.toBig()
+        	})
         }
         obj.tosmall = function(){
         	obj.showPicBox.empty();
@@ -60,7 +104,7 @@ jQuery.fn.extend({
         	obj.arginit();
         	obj.Enode.hide();
         	obj.showPicBox.css("width",obj.showPicBox.width());
-        	obj.showPicBox.html(template()).show();
+        	obj.showPicBox.html(template(options.data)).show();
             obj.showPicBox.find('[action-type="tosmall"]').click(function(){obj.tosmall()});   
         	obj.mouseInit(obj.showPicBox.find('[node-type="picShow"]'));
             obj.eventInit();
@@ -72,7 +116,7 @@ jQuery.fn.extend({
             obj.directionIndex(index);
         }
         obj.toRight = function(){
-        	var index = obj.index<obj.len? (obj.index+1) : obj.len;
+        	var index = obj.index<(obj.len-1)? (obj.index+1) : obj.len-1;
             obj.directionIndex(index);
         }
         obj.eventInit = function(){
@@ -89,26 +133,26 @@ jQuery.fn.extend({
             });
             obj.showPicBox.find('[action-type="trunLeft"]').click(function(){
                 angle+=90;
-                obj.imgbox.find('img').rotateLeft(angle);
+                $("#"+obj.lgimgId).rotateLeft();
             })
             obj.showPicBox.find('[action-type="trunRight"]').click(function(){
                 angle-=90;
-                obj.imgbox.find('img').rotateRight(angle);
+                $("#"+obj.lgimgId).rotateRight();
             })
         }
         obj.carouselInit = function(){
         	var self = this;
-        	this.owlpicshow = $('[node-type="mediaShowImg"]');
+        	this.owlpicshow = obj.showPicBox.find('[node-type="mediaShowImg"]');
         	this.owlpicshow.owlCarousel({
 				items : 9,
 				itemsDesktop : [1199,6],
 				itemsDesktopSmall : [990,9],
 				pagination:false
 			});
-			$('[action-type="picshowNext"]').click(function(){
+        	obj.showPicBox.find('[action-type="picshowNext"]').click(function(){
 				self.owlpicshow.trigger('owl.next');
 			})
-			$('[action-type="picshowPrev"]').click(function(){
+			obj.showPicBox.find('[action-type="picshowPrev"]').click(function(){
 				self.owlpicshow.trigger('owl.prev');
 			})
         }
@@ -119,7 +163,8 @@ jQuery.fn.extend({
         	owl.jumpTo(Math.floor(index/owl.orignalItems));
         	$(node_alis[obj.index]).removeClass("select");
         	$(node_alis[index]).addClass('select');
-        	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+_src+'" width="548">');
+        	
+        	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+_src+'" width="548" id="'+obj.lgimgId+'">');
             obj.showPicBox.find('[action-type="seeBigPic"]').attr('href',_src);
             obj.index = index;
             callback && typeof(callback) == "function" && callback(index);
@@ -157,7 +202,7 @@ jQuery.fn.extend({
     $.fn.picShow = function(options){
         return this.each(function(){
             var element = $(this);
-
+            var options = {};
             // Return early if this element already has a plugin instance
             if (element.data('picShow')) return;
 

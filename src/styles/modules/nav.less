@@ -1,17 +1,22 @@
 .renhe-nav {
 	background-color: #313131;
-
+	.container {
+		padding-left: 9px;
+  		padding-right: 9px;
+	}
 	.renhe-logo {
 		padding: 12px 0;
 	}
 	.navbar-inverse {
 		min-height: 75px;
 		border-radius: 0;
+		@media (min-width: 995px){
+			.navbar-nav {
+				margin-left:15%;
+			}
+		}
 		.navbar-nav > li > a {
 			font-size: 16px;
-			&:hover > .rh-arrow {
-				display: inline-block;
-			}
 		}
 		.navbar-nav > .active > a {
 			background-color: transparent;
@@ -24,7 +29,7 @@
 		}
 		.navbar-collapse {
 			padding-top: 14px;
-			max-width: 968px;
+			max-width: 980px;
 		}
 		.navbar-brand {
 			height: auto;
@@ -55,11 +60,10 @@
 			}
 		}
 		.navbar-form {
-			.input-group {
-				background-color: #424242;
-				border-radius: 20px;
-			}
+			padding: 0px 10px;
 			input.form-control {
+				width: 220px;
+				padding-right:38px;
 				border-radius: 20px;
 				background-color: #424242;
 				border: 0;
@@ -72,6 +76,10 @@
 				}
 			}
 			.btn-link {
+				position: absolute;
+				right: 0;
+				z-index: 10;
+				top: 3px;
 				color: #a9a8a8;
 				&:hover,&:active,&:visited,&:focus {
 					text-decoration: none;

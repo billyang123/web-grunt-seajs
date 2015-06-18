@@ -1,0 +1,61 @@
+<div class="renhe-expand-media-box">           
+  <div class="renhe-expand-media">
+    <div class="tab-feed-a">
+      <ul class="list-unstyled">
+        <li>
+          <span>
+            <a href="javascript:void(0);" action-type="tosmall">
+              <i class="W_ficon">k</i>收起
+            </a>
+          </span>
+        </li>
+        <li>
+          <span>
+            <a href="javascript:void(0);" action-type="seeBigPic" target="_blank">
+              <i class="W_ficon">f</i>查看大图
+            </a>
+          </span>
+        </li>
+        <li>
+          <span>
+            <a href="javascript:void(0);" action-type="trunLeft">
+              <i class="W_ficon">m</i>向左旋转
+            </a>
+          </span>
+        </li>
+        <li>
+          <span>
+            <a href="javascript:void(0);" action-type="trunRight">
+              <i class="W_ficon">n</i>向右旋转
+            </a>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- .renhe-expand-media -->
+  <div class="renhe-media-view">
+    <div class="media-show-box">
+      <ul class="list-unstyled smallcursor" node-type="picShow">
+        <li class="active"><img src="http://ww1.sinaimg.cn/bmiddle/a716fd45jw1es5qprtqqhj20c80c8tbi.jpg"></li>
+      </ul>
+    </div>
+    <div class="pic-choose-box">
+		<div node-type="mediaShowImg">
+			{{#each this}}
+            <a href="javascript:void(0);" data-action-src="{{big}}" data-index="{{@index}}"><img src="{{tiny}}" width="50"></a>
+            {{/each}}
+        </div>
+    	<a class="arrow-small arrow-left-small" href="avascript:void(0);" action-type="picshowPrev">
+            <i class="W_ficon">b</i>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="arrow-small arrow-right-small" href="javascript:void(0);" action-type="picshowNext">
+            <i class="W_ficon">a</i>
+            <span class="sr-only">Next</span>
+        </a>
+	</div>
+  </div>
+  <!-- .renhe-media-view -->
+</div>
+<!-- .renhe-expand-media-box -->

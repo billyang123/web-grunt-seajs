@@ -2,6 +2,7 @@ var fs = require("fs");
 var path = require("path");
 //var iconv = require('iconv-lite');
 var assetsPath = "../assets";
+//var assetsPath = "../bulid";
 module.exports = function(grunt) {
 	grunt.file.defaultEncoding = 'gbk';
     var configFile = grunt.option("config");
@@ -35,7 +36,7 @@ module.exports = function(grunt) {
             alias: configFileContent.alias,
             aliasPaths: configFileContent.paths,
             handlebars: {
-                id: 'plugins/handlebars/handlebars-1-0-2',
+                id: 'plugins/handlebars/handlebars',
                 knownHelpers: [
                     "if",
                     "each",

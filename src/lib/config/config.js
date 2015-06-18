@@ -1,14 +1,14 @@
 (function() {
     var root = this;
-    var assetsPath = "http://devww.renhe.cn/";
+    var assetsPath = "";
     var config = {
         base: typeof process === "undefined" ? window.HEALTH.assetsPath : null,
 
         alias: {
             // plugins
-            "handlebars": 'plugins/handlebars/handlebars-1-0-2',
-            "$": assetsPath+'lib/jquery/jquery-1-7-1-gbk-min.js',
-            "jQuery": assetsPath+'lib/jquery/jquery-1-8-3',
+            "handlebars": 'plugins/handlebars/handlebars',
+            "$": 'lib/jquery/jquery-1-7-1-gbk-min.js',
+            "jQuery": 'lib/jquery/jquery-1-7-1-gbk-min.js',
             "metadata": 'plugins/jquery-metadata/jquery-metadata',
             'jquery-validate':'plugins/jquery-validate/jquery-validate',
             "tab":'plugins/bootstrap/tab',
@@ -25,15 +25,15 @@
             
         },
         paths: {
-            utilsPath: 'utils',
+            utilsPath: 'utils'
             
-            // 业务模块
+            // 业锟斤拷模锟斤拷
 
         },
         comboSyntax: ["??", ","],
         comboMaxLength: 500,
         preload: [
-            '$'
+            '$','collapse'
         ],
         map: [],
         charset: 'gbk',

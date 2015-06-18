@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
 	var $ = require("$");
 	require('jquery.ui');
-	require('scripts/widget/picshow')
+	require('scripts/widget/showpicbox/picshow')
 	require('jquery.fileupload');
 	require('jquery.iframe-transport');
 	require('ajaxRails');
@@ -46,6 +46,7 @@ define(function(require, exports, module) {
 			'[action-type="CommitCancel"] click':'CommitCancel',
 			'[action-type="addtopic"] ajax:success':'addtopic',
 			'[action-type="CommitSend"] ajax:success':'CommitSend',
+			'[action-type="like"] ajax:success':'like',
 			'[action-type="CommitDel"] ajax:success':'CommitDel',
 			'[action-type="networkrefresh"] ajax:success':'networkrefresh',
 			'[action-type="networkrefresh"] ajax:send':'beforenetworkrefresh',
@@ -72,6 +73,7 @@ define(function(require, exports, module) {
 			);
 		},
 		setcoin:function(e,d){
+			var $this = $(e.target);
 			var numnd = $('[node-type="coinNum"]');
 			var num = parseInt(numnd.attr("data-num"),10)+1;
 			numnd.attr("data-num",num).text(num);
@@ -93,7 +95,10 @@ define(function(require, exports, module) {
 			this.htmlFadeIn(apnode,text,"html")
 		},
 		CommitDel:function(e,text){
-			$(e.target).closest(".media-commont").remove();
+			var el = $(e.target).closest(".media-commont").removeClass("in");
+			setTimeout(function(){
+				el.remove();
+			},200)
 		},
 		htmlFadeIn:function(apnode,text,type){
 			var $res = $(text);
@@ -109,6 +114,8 @@ define(function(require, exports, module) {
 					node = $res;
 					apnode.html($res)
 				break;
+				default:
+				break;
 			}
 			var hasIn = node.hasClass('in');
 			if(hasIn) node.removeClass('in');
@@ -118,7 +125,10 @@ define(function(require, exports, module) {
 		},
 		CommitSend:function(e,text){
 			var apnode = $(e.target).closest('[node-type="minArticle"]').find('[node-type="commonts"]');
-			this.htmlFadeIn(apnode,text,"appendTo")
+			this.htmlFadeIn(apnode,text,"appendTo");
+			if ($(e.target).is('form')) {
+		      return $(e.target)[0].reset();
+		    }
 		},
 		addtopic:function(e,text){
 			var apnode = $('[node-type="article"]');
@@ -127,6 +137,9 @@ define(function(require, exports, module) {
 		CommitCancel:function(e){
 			var _this = $(e.target);
 			_this.closest('.commops').hide().siblings("textarea").attr("rows",1);
+		},
+		like:function(e){
+			
 		},
 		removeFile:function(e){
 			var _this = $(e.target);
@@ -151,7 +164,8 @@ define(function(require, exports, module) {
 			    paginationSpeed : 400,
 			    singleItem:true,
 			    navigation:false,
-			    baseClass:"renhe-banner-carousel"
+			    baseClass:"renhe-banner-carousel",
+			    stopOnHover : true
 			      // "singleItem:true" is a shortcut for:
 			  // items : 1, 
 			  // itemsDesktop : false,
@@ -165,7 +179,8 @@ define(function(require, exports, module) {
 				items : 4,
 				itemsDesktop : [1199,3],
 				itemsDesktopSmall : [979,3],
-				pagination:false
+				pagination:false,
+				stopOnHover : true
 			});
 			$('[action-type="histryNext"]').click(function(){
 				owlcs.trigger('owl.next');
@@ -184,14 +199,13 @@ define(function(require, exports, module) {
 	    	  return false;
 		},
 		transmitTo:function(e){
-			var source   = $('#transmit-template').html();
-			var transmitTemplate = Handlebars.compile(source);
+			var transmitTemplate = require('./transmitTemp.handlebars');
 			$( transmitTemplate() ).dialog({
-		      title: "分享留言",
+		      title: "分享到自己的人脉圈",
 		      width:446,
 		      buttons: [
 		        {
-		          text: "分享",
+		          text: "确定",
 		          click: function() {
 		            $( this ).dialog( "close" );
 		          }
@@ -249,7 +263,7 @@ define(function(require, exports, module) {
 			var addFacePicId = $(els).attr("addFacePicId");
 			var AddFaceEle = $("#"+addFacePicId);
 			var options = $.extend(true,default_settings,{
-				title: "常用表情",
+				title: "选择表情",
 				width:542,
 				position: {
 					of: els
