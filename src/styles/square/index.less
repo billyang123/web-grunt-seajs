@@ -73,6 +73,18 @@
 				font-size: 12px;
 			}
 		}
+		.media-body {
+			position: relative;
+		}
+		.scignore {
+			display:none;
+			position: absolute;
+			right:0;
+			top:0;
+		}
+		li:hover .scignore {
+			display:inline-block;
+		}
 		.media h4 {
 			font-size:14px;
 		}
@@ -188,7 +200,7 @@
 	.media-article {
 		background-color: #FFF;
 		padding: 16px 12px;
-		margin-bottom: 3px;
+		margin-bottom: 1px;
 		border-radius: 4px;
   		.box-shadow(0 1px 1px rgba(0,0,0,.05));
 		.media-heading {
@@ -203,7 +215,7 @@
 	.media-praise-info,.media-commont-info {
 		.clearfix();
 		padding: 12px;
-		margin-bottom: 3px;
+		margin-bottom: 1px;
 		background: #FFF;		
 		> div {
 			position: relative;
@@ -232,7 +244,11 @@
 			color: #cfcdcd;
   			cursor: pointer;
   			font-size: 18px;
+  			text-decoration: none;
 		}
+	}
+	.doicon:hover,.doicon:active,.doicon:visited,doicon:link {
+		text-decoration: none;
 	}
 	.media-handle {
 		margin-bottom: 0;
@@ -241,7 +257,10 @@
 		li {
 			float: right;
 			text-align: center;
-			width: 95px;
+			margin-right:20px;
+			&:nth-child(2) {
+				margin-right:0;
+			}
 			> a {
 				position: relative;
 				color: #313131;
@@ -262,10 +281,11 @@
 			}
 			line-height: 36px;
 			text-align: left;	
+			margin-right:5px;
 		}
 	}
 	.dotime {
-		width: 110px;
+		display:inline-block;
 		float: left;
 		text-align: left;
 		font-size: 12px;
@@ -302,7 +322,26 @@
 			float: left;
 			margin: 0 6px 6px 0;
 			> a {
+				/*非IE的主流浏览器识别的垂直居中的方法*/  
+		        display: table-cell;  
+		        vertical-align:middle;  
+		 
+		        /*设置水平居中*/  
+		        text-align:center;  
+		 
+		        /* 针对IE的Hack */  
+		        *display: block;  
+		        *font-size: 79px;/*约为高度的0.873，200*0.873 约为175*/  
+		        *font-family:Arial;/*防止非utf-8引起的hack失效问题，如gbk编码*/  
+		 
+		        width:90px;  
+		        height:90px;
 				cursor:url(http://s1.renhe.cn/images/weibo/big.cur),auto;
+				img {
+					max-width:90px;  
+		        	max-height:90px;
+		        	vertical-align: middle;
+				}
 			}
 		}
 	}
@@ -344,8 +383,8 @@
 	}
 	div& {
 		top: -42px;
-		left: 50%;
-		margin-left: -130px;
+		left: 24px;
+		
 		border-top-width: 0;
 		border-bottom-color: #050505;
 		border-bottom-color: rgba(05, 05, 05, 0.2);
@@ -359,6 +398,9 @@
 	}
 }
 .upload-img-popover {
+	.file-item {
+		border:1px solid #ccc;
+	}
 	.img-list {
 		width: 370px;
 		margin: 0;
@@ -393,8 +435,9 @@
 		        	.delimg {
 		        		display:inline-block;
 		        		position: absolute;
-		        		top:0;
-		        		right:0;
+		        		top:2px;
+		        		right:4px;
+		        		color:red;
 		        	}
 		        }
 			}
@@ -441,10 +484,16 @@
 .renhe-square-main .more-article {
 	background-color: #fff;
 }
+.renhe-square-main textarea {
+	resize: vertical;
+}
 div.renhe-square-main,div.renhe-square-sidebar {
 	padding-left: 9px;
   	padding-right: 9px;
 	.panel {
 	  margin-bottom: 18px;
 	}
+}
+div.renhe-square-sidebar .owl-item .item {
+	width:56px;
 }

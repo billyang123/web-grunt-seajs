@@ -1,5 +1,5 @@
 define(function(require, exports) {
-    var Handlebars = require('Handlebars');
+    var Handlebars = require('handlebars');
     var isArray = function(value) {
         return Object.prototype.toString.call(value) === '[object Array]';
     }
@@ -42,6 +42,9 @@ define(function(require, exports) {
     eR.add('!==', function(left, right) {
         return left !== right;
     });
+    eR.add('len>', function(left, right) {
+        return left.length > right;
+    });
     eR.add('in', function(left, right) {
         if ( ! isArray(right)) {
             right = right.split(',');
@@ -77,7 +80,6 @@ define(function(require, exports) {
     };
 
     Handlebars.registerHelper('is', isHelper);
-
     Handlebars.registerHelper('nl2br', function(text) {
         var nl2br = (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
         return new Handlebars.SafeString(nl2br);
@@ -95,6 +97,8 @@ define(function(require, exports) {
             Array.prototype.slice.call(arguments, 0, -1)
         ));
     });
-
+    Handlebars.registerHelper('safeString', function(string) {
+        return new Handlebars.SafeString(safeString);
+     });
     return eR;
 })

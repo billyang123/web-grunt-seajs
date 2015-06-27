@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-	var $ = require("$");
+	require("common");
 	require('jquery.ui');
 	require('scripts/widget/showpicbox/picshow')
 	require('jquery.fileupload');
@@ -7,17 +7,29 @@ define(function(require, exports, module) {
 	require('ajaxRails');
 	require('owlcarousel');
 	require('dropdown');
+	require('handlebars-helper');
+	var i18n = require("i18n/{locale}");
 	//var Handlebars = require('handlebars');
 	//var upload_temp = require('./uploadTemp');
+	//weibo callback success
+	window.Renhe = require('Renhe');
+    window.authWeiboCallback = function() {
+    	$('body').undelegate("#weiboShareCheckbox","click")
+    	$("#weiboShareCheckbox").prop("checked", true);
+    	Renhe.alert(i18n.sinaWeibo.bindSuccess);
+    }
+	var $ = require("$");
+	
 	var upload_temp = require('./uploadTemp.handlebars');
 	var fileNum = 0;
+	var topicNum = -1;
 	var default_settings = {
 		title:"",
 		draggable: false,
 		resizable: false,
 		width:386,
 		closeOnEscape: false,
-		position: { my: "center+100 top+8", at: "center bottom",collision:'none'},
+		position: { my: "left top", at: "left bottom",collision:'none'},
 		dialogClass: "renhe-dialog-popover",
 		show:{ effect: "fadeIn", duration: 400 }
 	}
@@ -28,6 +40,7 @@ define(function(require, exports, module) {
 		self.faceDGSId = false;
 		self.DGS = {};
 		self.element = $(element);
+		self.addTopicEle = self.element.find('[action-type="addtopic"]').find('[type="submit"]');
 		self.carouselInit();
 		self.init();
 	}
@@ -40,8 +53,8 @@ define(function(require, exports, module) {
 			'[action-type="willSubCommit"] click':'willSubCommit',
 			'[action-type="showUploadProver"] click':'showUploadProver',
 			'[action-type="addMessageBoardFacePic"] click':'addMessageBoardFacePic',
-			'[action-type="showWordLimt"] keyup':'textareaLimit',
-			'[action-type="transmitTo"] click':'transmitTo',
+			'[action-type="showWordLimt"] keyup':'topicTextLimit',
+			'[action-type="shareTo"] ajax:success':'shareTo',
 			'[action-type="removeFile"] click':'removeFile',
 			'[action-type="CommitCancel"] click':'CommitCancel',
 			'[action-type="addtopic"] ajax:success':'addtopic',
@@ -51,8 +64,10 @@ define(function(require, exports, module) {
 			'[action-type="networkrefresh"] ajax:success':'networkrefresh',
 			'[action-type="networkrefresh"] ajax:send':'beforenetworkrefresh',
 			'[action-type="Commit"] focus':'Commitfocus',
+			'[action-type="Commit"] keyup':'CommitTextLimit',
 			'[action-type="doSignin"] ajax:success':'setcoin',
-			'[action-type="commitAngletoggle"] click':'commitAngletoggle',
+			'[action-type="moreCommitToggle"] click':'moreCommitToggle',
+			'.scignore ajax:success':'ignore',
 			'#weiboShareCheckbox click':'weiboShare'
 		},
 		init:function(){
@@ -62,15 +77,9 @@ define(function(require, exports, module) {
 				self.element.delegate(nbs[0],nbs[1],(typeof(itemFn) == 'function')?itemFn:$.proxy(self,itemFn));
 			})
 		},
-		commitAngletoggle:function(e){
-			$(e.target).toggle(
-				function () {
-				   $(this).addClass("icon-double-angle-down").removeClass('icon-double-angle-up');
-				},
-				function () {
-				   $(this).removeClass("icon-double-angle-up").addClass('icon-double-angle-down');
-				}
-			);
+		ignore:function(e,d){
+			var _li = $(e.target).closest("li");
+			_li.remove();
 		},
 		setcoin:function(e,d){
 			var $this = $(e.target);
@@ -101,11 +110,12 @@ define(function(require, exports, module) {
 			},200)
 		},
 		htmlFadeIn:function(apnode,text,type){
-			var $res = $(text);
+			var $res = $(text).hide();
 			var node;
 			switch(type){
 				case 'prependTo':
 					node = $res.prependTo(apnode);
+					
 				break;
 				case 'appendTo':
 					node = $res.appendTo(apnode);
@@ -118,30 +128,83 @@ define(function(require, exports, module) {
 				break;
 			}
 			var hasIn = node.hasClass('in');
-			if(hasIn) node.removeClass('in');
-			setTimeout(function(){
-				if(hasIn) node.addClass('in');
-			},300)
+			if(hasIn) {
+				node.removeClass('in');
+			}
+			node.slideDown("fast",function(){
+				$(this).addClass('in');
+			});
 		},
 		CommitSend:function(e,text){
 			var apnode = $(e.target).closest('[node-type="minArticle"]').find('[node-type="commonts"]');
 			this.htmlFadeIn(apnode,text,"appendTo");
 			if ($(e.target).is('form')) {
+				$(e.target).find('[type="submit"]').attr("disabled","disabled");
 		      return $(e.target)[0].reset();
 		    }
 		},
 		addtopic:function(e,text){
 			var apnode = $('[node-type="article"]');
-			this.htmlFadeIn(apnode,text,"prependTo")
+			this.htmlFadeIn(apnode,text,"prependTo");
+			if ($(e.target).is('form')) {
+		      $(e.target)[0].reset();
+		    }
+			this.uploadReset();
+			self.addTopicEle.attr("disabled","disabled");
+		},
+		uploadReset:function(){
+			var self = this;
+			if(!self.DGS["upload"]) return;
+			self.DGS["upload"].dialog('close');
+			$(".js-upload-id").val("");
+			fileNum = 0;
+			$('[class*="fileid-"]').remove();
+			self.DGS["upload"].find('[node-type="filenum"]').html(i18n.upload.text([fileNum,9-fileNum]))
+			$('#fileupload').fileupload('option','formData',{
+	    		publicationId:""
+	    	});
 		},
 		CommitCancel:function(e){
 			var _this = $(e.target);
-			_this.closest('.commops').hide().siblings("textarea").attr("rows",1);
+			_this.closest('.commops').hide().siblings("textarea").val("").attr("rows",1);
 		},
 		like:function(e){
-			
+			var $this = $(e.target);
+			numTarget = $this.find("span");
+			numTarget.text(numTarget.text() * 1 + 1);
+			numTarget.show();
+		},
+		moreCommitToggle:function(e,text){
+			var self = this;
+			var $this = $(e.target);
+			var $toTarget = $this.closest('[node-type="minArticle"]').find('[node-type="commonts"]');
+			if($this.hasClass("icon-double-angle-up")){
+				$this.addClass("icon-double-angle-down").removeClass('icon-double-angle-up');
+				if($this.data("moreCommit")) {
+					$toTarget.find(".fade").removeClass("in").slideToggle();
+					return;
+				}
+			}else{
+				$this.addClass("icon-double-angle-up").removeClass('icon-double-angle-down');
+				if($this.data("moreCommit")) {
+					$toTarget.find(".fade").slideToggle("fast",function(){
+						$(this).addClass("in");
+					});
+					return;
+				}
+				$.ajax({
+					url:$this.attr("data-href"),
+					type:"get",
+					data:$this.attr("data-params"),
+					success:function(text){
+						self.htmlFadeIn($toTarget,text,"appendTo");
+					}
+				})
+				$this.data("moreCommit",true);
+			}
 		},
 		removeFile:function(e){
+			var self = this;
 			var _this = $(e.target);
 			$.ajax({
 				url:_this.attr('href'),
@@ -149,6 +212,15 @@ define(function(require, exports, module) {
 				dataType:"json",
 				success:function(d){
 					if(d.success){
+						
+						if(--fileNum < 9){
+							$(e.currentTarget).closest('.upload-img-popover').find('[node-type="filenum"]').html(i18n.upload.text([fileNum,9-fileNum]))
+							//$(e.currentTarget).closest('.upload-img-popover').find('[node-type="filenum"]').text(fileNum).siblings('[node-type="yetfilenum"]').text(9-fileNum);
+							$('a.fileinput-button').show();
+						}
+						if(topicNum<0 && fileNum<=0){
+							self.addTopicEle.attr("disabled","disabled");
+						}
 						_this.closest('li').remove();
 					}
 				}
@@ -194,24 +266,35 @@ define(function(require, exports, module) {
 			var syncQqWeiboLivingRoom = $(_this).prop('checked');
 			jQuery.post('/ajax/changeSyncQqWeiboLivingRoom.html', {syncQqWeiboLivingRoom: syncQqWeiboLivingRoom});
 		},
-		weiboShare:function(){
-			window.open('/weibo/authCall.html?sender=6783482&syncLivingRoom=true','','toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=400,left=400,top=200');
-	    	  return false;
+		weiboShare:function(e) {
+			var _this = e.target;
+			var weiboBind = Boolean($(_this).attr('weiboBind'));
+			var sender = $(_this).attr('sender');
+			var domainName = $(_this).attr('domainName');
+			if(!weiboBind) {
+				window.open('/weibo/authCall.shtml?sender=' + sender + '&domainName=' + domainName + '&requestSuffix=.shtml','','toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=400,left=400,top=200');
+	        	return false;
+			}
+			return true;
 		},
-		transmitTo:function(e){
-			var transmitTemplate = require('./transmitTemp.handlebars');
-			$( transmitTemplate() ).dialog({
-		      title: "分享到自己的人脉圈",
+		shareTo:function(e, text) {
+			var self = this;
+			$(text).dialog({
+		      title: i18n.PerfectLight.share,
 		      width:446,
 		      buttons: [
 		        {
-		          text: "确定",
+		          text: i18n.btn.confirm,
 		          click: function() {
+		        	$.post("/ajax/shareMessageBoard.html", $(this).serializeArray(), function(html) {
+		        		var apnode = $('[node-type="article"]');
+		        		self.htmlFadeIn(apnode, html, "prependTo");
+		        	});
 		            $( this ).dialog( "close" );
 		          }
 		        },
 		        {
-		          text: "取消",
+		          text: i18n.btn.cancel,
 		          click: function() {
 		            $( this ).dialog( "close" );
 		          }
@@ -221,8 +304,37 @@ define(function(require, exports, module) {
 		      dialogClass: "renhe-dialog"
 		    });
 		},
-		textareaLimit:function(e){
-			return $('[data-node="'+$(e.target).attr('action-type')+'"]').text($(e.target).data('limit-num')-$(e.target).val().length);
+		textareaLimit:function(e,addFn){
+			var self = this;
+			var limitNum = $(e.target).data('limit-num');
+			var len = $(e.target).val().length;	
+			var btn = $(e.target).closest("form").find('[type="submit"]');
+
+			var target = $('[data-node="'+$(e.target).attr('action-type')+'"]');
+			var num = limitNum-len;
+			var adds = true;
+			if(addFn && typeof(addFn) == "function"){
+				adds = addFn(num);
+			}
+			if((limitNum<len || len<=0) && adds){
+				btn.attr("disabled","disabled");
+			}else{
+				btn.removeAttr("disabled");
+			}
+			if(target){
+				return (num<0 ? target.text(0):target.text(num));
+			}
+		},
+		topicTextLimit:function(e){
+			var self = this;
+			this.textareaLimit(e,function(num){
+				topicNum = num;
+				return fileNum<=0;
+			});
+		},
+		CommitTextLimit:function(e){
+			var self = this;
+			this.textareaLimit(e);
 		},
 		uploadOvery:function(els){
 			var self = this;
@@ -233,57 +345,64 @@ define(function(require, exports, module) {
 				return;
 			}
 			var options = $.extend(true,default_settings,{
-				title: "上传图片",
+				title: i18n.upload.title,
 				width:386,
 				position: {
 					of: els
 				},
-				create:function( event, ui ) {self.uploadInit();},
+				create:function( event, ui ) {self.uploadInit(els);},
 				close: function( event, ui ) {
-					fileNum = 0;
-					$('[class*="fileid-"]').remove();
+					
 				}
 			})
 			//var source   = $('#upload-template').html();
 			//var template = Handlebars.compile(source);
-			self.DGS["upload"] = $( upload_temp() ).dialog(options);
+			self.DGS["upload"] = $( upload_temp({text:i18n.upload.text([0,9])}) ).dialog(options);
 		},
-		innerFace:function(AddFaceEle,event,ui){
+		innerFace:function(event,ui){
 			var self = this;
 			var _li = $(event.target).find(".emotionslist li");
 			_li.unbind( "click" );
 			_li.bind("click",function(evt){
 				var addfacespic = $(this).find("img").attr("addfacespic");
-				AddFaceEle.val(AddFaceEle.val()+addfacespic);
+				self.AddFaceEle.val(self.AddFaceEle.val()+addfacespic);
 				self.DGS["face"].dialog('close');
+				self.AddFaceEle.closest("form").find('button[type="submit"]').removeAttr("disabled");
 			})
 		},
 		faceOvery:function(els){
 			var self = this;
 			var addFacePicId = $(els).attr("addFacePicId");
-			var AddFaceEle = $("#"+addFacePicId);
+			self.AddFaceEle = $("#"+addFacePicId);
 			var options = $.extend(true,default_settings,{
-				title: "选择表情",
+				title: i18n.chooseFace.title,
 				width:542,
 				position: {
+					my: "left top",
+					at: "left bottom",
 					of: els
 				},
 				open: function( event, ui ) {
-					self.innerFace(AddFaceEle,event,ui)
+					self.innerFace(event,ui)
+				},
+				close:function(event, ui){
+					self.AddFaceEle.trigger("focus");
 				}
 			})
 			self.DGS["upload"] && self.DGS["upload"].dialog( "isOpen" ) && self.DGS["upload"].dialog('close');
 			if(self.faceDGSId){
-				if(addFacePicId==self.faceDGSId){
-					self.DGS["face"].dialog( "isOpen" ) ?
-					self.DGS["face"].dialog('close') : self.DGS["face"].dialog('open');
-				}else{
-					self.DGS["face"].dialog('close');
-					self.DGS["face"].dialog("option", options)
-					self.DGS["face"].dialog('open');
-					self.faceDGSId = addFacePicId;
+				//self.DGS["face"].dialog("option", options)
+				if(self.faceDGSId == addFacePicId){
+					if(self.DGS["face"].dialog( "isOpen" )){
+						self.DGS["face"].dialog('close');
+					}else{
+						self.DGS["face"].dialog('open')
+					}
+					return;
 				}
-	
+				self.DGS["face"].dialog("option", options)
+				self.DGS["face"].dialog('open');
+				self.faceDGSId = addFacePicId;
 				return;
 			}
 			self.faceDGSId = addFacePicId;
@@ -295,32 +414,40 @@ define(function(require, exports, module) {
 				}
 			})
 		},
-		uploadInit:function(){
-			var url = '/uploadfile.htm';
+		uploadInit:function(els){
+			var self = this;
+			var url = '/ajax/uploadMessageBoardImage.html';
 		    $('#fileupload').fileupload({
-		        url: url,
+		        url: $(els).attr("href")||url,
 		        dataType: 'json',
 		        add: function (e, data) {
-		        	console.log(e, data)
-		        	var str = '';
-		        	
+		        	var str = '';		        	
 		        	$.each(data.files,function(index,item){
-		        		fileNum +=1;
-		        		str+='<li class="fileid-'+fileNum+'"><p class="text-center"><i class="icon-spinner icon-spin"></i></p><p class="text-overflow">'+item.name+'</p></li>';
-		        		
+		        		str+='<li class="file-item fileid-'+fileNum+'"><p class="text-center"><i class="icon-spinner icon-spin"></i></p><p class="text-overflow">'+item.name+'</p></li>';
 		        	})
 		        	$(this).closest('li').before(str)
-		            //data.context = $('<p/>').text('Uploading...').appendTo(document.body);
 		            data.submit();
 		        },
 		        progressall: function (e, data) {
-		            var progress = parseInt(data.loaded / data.total * 100, 10);
-		            console.log(e, data)
+		            //var progress = parseInt(data.loaded / data.total * 100, 10);
+		            //console.log(e, data)
 		        }
 		    }).on('fileuploaddone',function(e, data){
-		    	$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).html('<div><a href="/deletefile.htm" class="delimg icon-remove" action-type="removeFile"></a><img src="'+data.result.fileurl+'"/></div>')
-		    	$(e.currentTarget).closest('.upload-img-popover').find('[node-type="filenum"]').text(fileNum).siblings('[node-type="yetfilenum"]').text(8-fileNum);
-		    })
+		    	
+		    	
+		    	self.addTopicEle.removeAttr("disabled");
+		    	$('#fileupload').fileupload('option','formData',{
+		    		publicationId:data.result.publicationId
+		    	});
+		    	$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).html('<div><a href="/ajax/deleteMessageBoardImage.html?publicationId='+ data.result.publicationId +'&resourceId='+ data.result.resourceId +'" class="delimg icon-remove" action-type="removeFile"></a><img src="'+data.result.picUrl+'"/></div>')
+		    	fileNum +=1;
+		    	$(e.currentTarget).closest('.upload-img-popover').find('[node-type="filenum"]').html(i18n.upload.text([fileNum,9-fileNum]))
+		    	$(".js-upload-id").val(data.result.publicationId);
+		    	
+		    	if(fileNum == 9){
+		    		$('a.fileinput-button').hide();
+		    	}
+		    });
 		},
 		addMessageBoardFacePic:function(e){
 			this.faceOvery(e.target);

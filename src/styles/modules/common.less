@@ -1,4 +1,10 @@
 @import "mixins.less";
+a:link,
+a:visited,
+a:active,
+a:hover {
+	outline: 0;
+}
 ul {
 	list-style:none;
 	padding:0;
@@ -58,4 +64,22 @@ ul {
 }
 .mr5 {
 	margin-right: 5px;
+}
+.gotop{
+	position: fixed;
+	_position: absolute;
+	bottom: 100px;
+	_bottom: auto;
+	left: 50%;
+  	margin-left: 400px;
+	border: 1px solid #6eaae5;
+  	background-color: rgba(247,250,255,0.6);
+	width: 30px;
+	text-align: center;
+  	padding: 6px 8px;
+  	line-height: 13px;
+  	cursor: pointer;
+  	color: #6eaae5;
+  	border-radius: 3px 3px 3px 3px;
+  	font-size: 12px;
 }

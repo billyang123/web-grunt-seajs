@@ -3,10 +3,13 @@
     var assetsPath = "";
     var config = {
         base: typeof process === "undefined" ? window.HEALTH.assetsPath : null,
-
+		vars: {
+		    'locale': 'zh-cn'
+		},
         alias: {
             // plugins
             "handlebars": 'plugins/handlebars/handlebars',
+            "handlebars-helper":'plugins/handlebars/handlebars-helper',
             "$": 'lib/jquery/jquery-1-7-1-gbk-min.js',
             "jQuery": 'lib/jquery/jquery-1-7-1-gbk-min.js',
             "metadata": 'plugins/jquery-metadata/jquery-metadata',
@@ -21,20 +24,21 @@
             "jquery.ui":'plugins/jqueryui/jqueryui',
             "jquery.fileupload":'plugins/fileupload/jqueryfileupload',
             "jquery.iframe-transport":'plugins/fileupload/jquery-iframe-transport',
-            "ajaxRails":'plugins/jquery-ujs/jquery-ujs.js'
+            "ajaxRails":'plugins/jquery-ujs/jquery-rails',
+            "Renhe":'scripts/widget/renhe/renhe',
             
+            "common":"utilsPath/common/common"
         },
         paths: {
-            utilsPath: 'utils'
-            
-            // ҵ��ģ��
+            utilsPath: 'scripts/utils',
+            i18n:'scripts/utils/i18n'
 
         },
         comboSyntax: ["??", ","],
         comboMaxLength: 500,
-        preload: [
-            '$','collapse'
-        ],
+//        preload: [
+//            'common'
+//        ],
         map: [],
         charset: 'gbk',
         timeout: 20000,

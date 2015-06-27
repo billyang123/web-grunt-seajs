@@ -1,5 +1,6 @@
 define(function(require, exports, module) {
-var jQuery = require("$");  
+var jQuery = require("$");
+var i18n = require("i18n/{locale}");
 jQuery.fn.extend({
 	rotate: function(angle,whence) {  
 	    var p = this.get(0);
@@ -73,7 +74,7 @@ jQuery.fn.extend({
 	    var options = $.extend({
            element: element
         }, useroptions);
-        obj.Enode = $(options.element);
+        obj.Enode = $(options.element).closest('[node-type="feed_list_media_prev"]');
         obj.showPicBox = obj.Enode.siblings('[node-type="showPicBox"]');
         obj.lgimgId = new Date().getTime();
         obj.arginit = function(){
@@ -81,20 +82,19 @@ jQuery.fn.extend({
             obj.len = 0;
             obj.xy = {x:0,y:0};
             options.data=[];
-            $(options.element).find("img").each(function(index,item){
+            obj.Enode.find("img").each(function(index,item){
             	var imgSrc = $(item).attr("src");
             	options.data.push({
             		tiny:imgSrc,
             		big:imgSrc.split("!")[0]
             	})
             })
+            obj.len = options.data.length;
         }
-        obj.init = function() {
+        obj.init = function(el) {
         	var objlis = obj.Enode.find('a');
-        	objlis.click(function(){
-        		obj.index = objlis.index(this);
-        		obj.toBig()
-        	})
+        	obj.index = objlis.index(el);
+    		obj.toBig();
         }
         obj.tosmall = function(){
         	obj.showPicBox.empty();
@@ -104,10 +104,21 @@ jQuery.fn.extend({
         	obj.arginit();
         	obj.Enode.hide();
         	obj.showPicBox.css("width",obj.showPicBox.width());
-        	obj.showPicBox.html(template(options.data)).show();
+        	obj.showPicBox.html(template({data:options.data,optxt:i18n.showpic})).show();
             obj.showPicBox.find('[action-type="tosmall"]').click(function(){obj.tosmall()});   
-        	obj.mouseInit(obj.showPicBox.find('[node-type="picShow"]'));
+        	
             obj.eventInit();
+            obj.mouseInit(obj.showPicBox.find('[node-type="picShow"]'));
+            if(obj.len>1){
+            	obj.carouselInit();
+            	obj.showPicBox.find('[node-type="mediaShowImg"]').find("[data-index]").click(function(){
+                    obj.directionIndex($(this).data('index'));
+                });
+            }else{
+            	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+options.data[0].big+'" id="'+obj.lgimgId+'">');
+                obj.showPicBox.find('[action-type="seeBigPic"]').attr('href',options.data[0].big);
+                return;
+            }
             obj.directionIndex(obj.index);
         }
 
@@ -120,17 +131,8 @@ jQuery.fn.extend({
             obj.directionIndex(index);
         }
         obj.eventInit = function(){
-            var angle = 0;
-            
-            
-            if(obj.showPicBox.find('[node-type="mediaShowImg"]').length>0){
-            	obj.carouselInit();
-            }
+            var angle = 0;   
             var smlis = obj.showPicBox.find('[node-type="mediaShowImg"] .owl-item a');
-            obj.len = smlis.length;
-            smlis.click(function(){
-                obj.directionIndex($(this).data('index'));
-            });
             obj.showPicBox.find('[action-type="trunLeft"]').click(function(){
                 angle+=90;
                 $("#"+obj.lgimgId).rotateLeft();
@@ -164,26 +166,28 @@ jQuery.fn.extend({
         	$(node_alis[obj.index]).removeClass("select");
         	$(node_alis[index]).addClass('select');
         	
-        	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+_src+'" width="548" id="'+obj.lgimgId+'">');
+        	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+_src+'" id="'+obj.lgimgId+'">');
             obj.showPicBox.find('[action-type="seeBigPic"]').attr('href',_src);
             obj.index = index;
             callback && typeof(callback) == "function" && callback(index);
         }
         obj.mouseInit = function(el){
-        	
-        	el.on("mousemove",function(e){
-        		if((e.pageX-el.offset().left)<Math.floor(el.width()/3)){
-        			el.removeClass('smallcursor').removeClass('rightcursor').addClass('leftcursor');
-        			obj.Direction = 'leftcursor';
-        		}else if((e.pageX-el.offset().left)>Math.floor(el.width()*2/3)){
-        			el.removeClass('leftcursor').removeClass('smallcursor').addClass('rightcursor');
-        			obj.Direction = 'rightcursor';
-        		}else{ 
-        			el.removeClass('leftcursor').removeClass('rightcursor').addClass('smallcursor');
-        			obj.Direction = 'smallcursor';
-        		//console.log((e.pageX-el.offset().left) + ", " + (e.pageY-el.offset().top))
-        		}
-        	})
+        	if(obj.len<=1) {
+        		obj.Direction = 'smallcursor';
+        	}else{
+        		el.on("mousemove",function(e){
+            		if((e.pageX-el.offset().left)<Math.floor(el.width()/3)){
+            			el.removeClass('smallcursor').removeClass('rightcursor').addClass('leftcursor');
+            			obj.Direction = 'leftcursor';
+            		}else if((e.pageX-el.offset().left)>Math.floor(el.width()*2/3)){
+            			el.removeClass('leftcursor').removeClass('smallcursor').addClass('rightcursor');
+            			obj.Direction = 'rightcursor';
+            		}else{ 
+            			el.removeClass('leftcursor').removeClass('rightcursor').addClass('smallcursor');
+            			obj.Direction = 'smallcursor';
+            		}
+            	})
+        	}
         	el.click(function(e){
                 switch(obj.Direction){
                     case 'rightcursor':
@@ -204,15 +208,18 @@ jQuery.fn.extend({
             var element = $(this);
             var options = {};
             // Return early if this element already has a plugin instance
-            if (element.data('picShow')) return;
-
+            if (element.data('picShow')) {
+            	return element.data('picShow').init(this);
+            }
             // Pass options and element to the plugin constructer
             var picShow = new picShowFn(this, options);
-            picShow.init();
+            picShow.init(this);
             // Store the plugin object in this element's data
             element.data('picShow', picShow);
         });
     }
-    $('[node-type="feed_list_media_prev"]').picShow()
+    $(document).delegate('[node-type="feed_list_media_prev"] a',"click",function(){
+    	 $(this).picShow()
+    })
 })(jQuery);
 })

@@ -456,7 +456,15 @@ define(function(require, exports) {
   var $document;
 
   $document = $(document);
-
+  var buttonLoading = function(target){ 
+	  var ldDd = target.attr("data-loading");
+	  if(!ldDd) return;
+	  var str = '';
+	  if ( ldDd.indexOf( '{' ) <0 ) ldDd = "{" + ldDd + "}";
+	  ldDd = eval("(" + ldDd + ")");
+	  str = ldDd.icon?'<em class="'+ldDd.icon+'"></em>'+ldDd.text:ldDd.text;
+	  target.html(str)
+  }
   $document.on('ajax:success', '[data-done], [data-target]', function(evt, res) {
     var $res, $self, done, hasIn, self, target;
     if (this !== evt.target) {
@@ -494,6 +502,7 @@ define(function(require, exports) {
       return;
     }
     $this = $(this);
+    buttonLoading($this);
     if ($this.is('form')) {
       return $this.find(':submit:enabled').attr('disabled', 'disabled').attr('data-disabled-by', 'ajax');
     } else if ($this.is(':enabled')) {

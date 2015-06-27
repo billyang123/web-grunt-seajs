@@ -2,7 +2,7 @@ var fs = require("fs");
 var path = require("path");
 //var iconv = require('iconv-lite');
 var assetsPath = "../assets";
-//var assetsPath = "../bulid";
+//var assetsPath = "../../bulid";
 module.exports = function(grunt) {
 	grunt.file.defaultEncoding = 'gbk';
     var configFile = grunt.option("config");
@@ -294,6 +294,9 @@ module.exports = function(grunt) {
     if (!isBeautify) {
         tasks.push("uglify");
     }
+    
+    //return grunt.registerTask("default", ["cmd_transport"]);
+    
     grunt.registerTask("default", tasks);
     
     grunt.registerTask("css", [
