@@ -7,12 +7,25 @@
 	.renhe-logo {
 		padding: 12px 0;
 	}
+	.renhe-logo-text {
+		padding: 26px 0;
+		margin-left:0;
+	}
+	.nav-line {
+		display:none;
+		position: absolute;
+		border-bottom: 3px solid #E7371D;
+		height: 0;
+		overflow: hidden;
+		left: 0;
+		top: 72px;
+	}
 	.navbar-inverse {
 		min-height: 75px;
 		border-radius: 0;
 		@media (min-width: 995px){
 			.navbar-nav {
-				margin-left:15%;
+				margin-left:5%;
 			}
 		}
 		.navbar-nav > li > a {
@@ -30,13 +43,14 @@
 		.navbar-collapse {
 			padding-top: 14px;
 			max-width: 980px;
+			position: relative;
 		}
 		.navbar-brand {
 			height: auto;
 		}
 		.navbar-setting {
 			position: relative;
-			padding: 10px 0 10px 15px;
+			padding: 13px 0 10px 15px;
 			> .seticon {
 				font-size: 20px;
 				text-decoration: none;
@@ -64,8 +78,8 @@
 			input.form-control {
 				width: 220px;
 				padding-right:38px;
-				border-radius: 20px;
-				background-color: #424242;
+				border-radius: 16px;
+				background-color: #f2f2f2;
 				border: 0;
 				color: #a0a0a0;
 				box-shadow: inherit;
@@ -74,6 +88,7 @@
 					outline: 0;
 					box-shadow: inherit;
 				}
+				
 			}
 			.btn-link {
 				position: absolute;
@@ -97,5 +112,14 @@
 			margin-left: -8px;
 		}
 	}
-
+	.caret {
+	  border-top-width: 6px;
+	  border-right-width: 6px;
+	  border-left-width: 6px;
+	}
+	.navbar-nav>li>.dropdown-menu {
+	  margin-top: 0;
+	  border-top-right-radius: 4px;
+	  border-top-left-radius: 4px;
+	}
 }

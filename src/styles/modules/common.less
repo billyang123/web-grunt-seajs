@@ -1,14 +1,28 @@
 @import "mixins.less";
+body {
+    -webkit-font-smoothing: antialiased;
+    background-color: #f2f2f2;
+}
+a:hover {
+	color:#eb5441;
+	outline: 0 !important;
+	text-decoration: none !important;	
+}
+
 a:link,
 a:visited,
-a:active,
-a:hover {
-	outline: 0;
+a:active {
+	outline: 0 !important;
+	text-decoration: none !important;	
 }
+
 ul {
 	list-style:none;
 	padding:0;
 	margin:0;
+}
+.rh-md-12 {
+	width: 100%;
 }
 .no-border {
 	border: 0 !important;
@@ -37,9 +51,8 @@ ul {
     clear: both; 
     height: 0; 
 } 
-.clearfix{*zoom:1;}
-.rh-margin-left {
-	margin-left: 25px;
+.clearfix{
+	*zoom:1;
 }
 .fileinput-button{
 	position: relative;
@@ -56,30 +69,124 @@ ul {
 	  cursor: pointer;
 	}
 }
-.mt20 {
-	margin-top: 20px !important;
+.mr {
+	&30 {
+		margin-right: 30px;
+	}
+	&20 {
+		margin-right: 20px;
+	}
+	&10 {
+		margin-right: 10px;
+	}
+	&5 {
+		margin-right: 5px;
+	}
 }
-.mr30 {
-	margin-right: 30px;
-}
-.mr5 {
-	margin-right: 5px;
+.mt {
+	&10 {
+		margin-top:10px;
+	}
+	&20 {
+		margin-top: 20px !important;
+	}
 }
 .gotop{
 	position: fixed;
 	_position: absolute;
-	bottom: 100px;
+	bottom: 144px;
 	_bottom: auto;
 	left: 50%;
-  	margin-left: 400px;
-	border: 1px solid #6eaae5;
-  	background-color: rgba(247,250,255,0.6);
-	width: 30px;
-	text-align: center;
-  	padding: 6px 8px;
-  	line-height: 13px;
+  	margin-left: 490px;
   	cursor: pointer;
-  	color: #6eaae5;
-  	border-radius: 3px 3px 3px 3px;
-  	font-size: 12px;
+}
+.panel-default {
+	  border-color: transparent;
+	  border-radius: 0;
+}
+.level-icon {
+	background-image: url("/images/renhe_dengji_icon.png");
+	background-repeat:no-repeat;
+	display:inline-block;
+	width:28px;
+	height:28px;
+	&-plat {
+		background-position:-122px 0;
+	}
+	&-gold {
+		background-position:-81px 0;
+	}
+	
+	&-auth {
+		background-position:0 0;
+	}
+	&-vip {
+		background-position:-41px 0;
+	}
+}
+.my-icon {
+	background-image: url("/images/square_icon.png");
+	background-repeat:no-repeat;
+	display:inline-block;
+	&-cog {
+		width:25px;
+		height:25px;
+		background-position:2px -29px;
+		&:hover {
+			background-position:-39px -29px;
+		}
+	}
+	&-face {
+		width:18px;
+		height:18px;
+		background-position:1px -64px;
+	}
+	&-img {
+		width:18px;
+		height:18px;
+		background-position:-1px -94px;
+	}
+	&-commit {
+		width:17px;
+		height:18px;
+		background-position:-2px -197px;
+	}
+	&-heart {
+		width:18px;
+		height:18px;
+		background-position:-1px -161px;
+	}
+	&-backtop {
+		width:50px;
+		height:50px;
+		background-position:0 -224px;
+		&:hover {
+			background-position:-52px -224px;
+		}
+	}  
+}
+a.btn-link.disabled .my-icon-heart,
+a.btn-link[disabled] .my-icon-heart,
+a:hover.btn-link .my-icon-heart {
+	background-position:-39px -161px;
+}
+.squ-img {
+	width:50px;
+	height:50px;
+	border-radius: 50%;
+}
+.cmu-img {
+	width:30px;
+	height:30px;
+	border-radius: 50%;
+}
+.itu-img {
+	width:40px;
+	height:40px;
+	border-radius: 50%;
+}
+.lgu-img {
+	width:70px;
+	height:70px;
+	border-radius: 50%;
 }

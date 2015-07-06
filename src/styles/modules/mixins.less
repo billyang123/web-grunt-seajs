@@ -1,5 +1,4 @@
-@bootstrap-path : '../../../bower_components/bootstrap';
-@bootstrap-path-less : '@{bootstrap-path}/less';
+@bootstrap-path-less : './bs-less';
 @import "@{bootstrap-path-less}/mixins.less";
 // Mixins
 // --------------------------
@@ -91,5 +90,20 @@
       font-size: @base-font-size;
       *line-height: @height / @base-font-size;
     }
+  }
+}
+.renhe-button-variant(@color; @background;@hover-background; @border;@hover-border) {
+  color: @color;
+  background-color: @background;
+  border-color: @border;
+
+  &:hover,
+  &:focus,
+  &.focus,
+  &:active,
+  &.active{
+    color: @color;
+    background-color: @hover-background;
+        border-color: @hover-border;
   }
 }

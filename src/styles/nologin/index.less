@@ -1,4 +1,5 @@
 @import "../modules/mixins.less";
+
 .renhe-nologin-main {
 	background-color:#FFF; 
 }
@@ -6,6 +7,22 @@
 	height: 853px;
   	max-height: 100%;
   	position: relative;
+  	overflow: hidden;
+}
+.cover-bg {
+	position: absolute;
+	width:100%;
+	height:100%;
+	background-repeat:no-repeat;
+	background-position: center center;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	-moz-transform: scaleX(1.06) scaleY(1.06);
+	-webkit-transform: scaleX(1.06) scaleY(1.06);
+	-moz-transition: -moz-transform 4s linear;
+	-webkit-transition: -webkit-transform 4s linear;
 }
 
 .renhe-no-auth {
@@ -32,8 +49,8 @@
 	}
 	.renhe-login-title {
 		color: #FFF;
-		font-size: 18px;
-		letter-spacing: 28px;
+		font-size: 24px;
+		letter-spacing: 26px;
   		padding-left: 28px;
   		margin-top: 24px;
   		margin-bottom: 46px;
@@ -84,24 +101,24 @@
 
 	}
 	.register-content {
-		padding: 10px 65px 20px 65px;
+		padding: 25px 65px 40px 65px
 	}
 	.login-content {
-		padding: 10px 65px;
+		padding: 25px 65px 20px 65px;
 	}
 	.login-content,.register-content {
 		.list-group {
 			margin-bottom: 10px;
 		}
 		.list-group-item {
-			border-radius: 0;
+			/*border-radius: 0;*/
 			input {
 				width: 270px;
 			} 
 		}
 		button[type="submit"] {
 			width: 100%;
-			border-radius: 0;
+			/*border-radius: 0;*/
 		}
 	}
 }
@@ -125,20 +142,24 @@
 	&-qhd {
 		background-position: -515px 0;
 	}
-	&-pig {
-		background-position: 0 -142px;
+	
+	&-jr {
+		background-position: 0 -143px;
 	}
-	&-book {
-		background-position: -169px -142px;
+	&-dc {
+		background-position: -134px -143px;
 	}
-	&-set {
-		background-position: -335px -142px;
+	&-jy {
+		background-position: -269px -143px;
 	}
-	&-user {
-		background-position: -503px -142px;
+	&-zz {
+		background-position: -402px -143px;
 	}
-	&-www {
-		background-position: -670px -142px;
+	&-kj {
+		background-position: -538px -143px;
+	}
+	&-fw {
+		background-position: -670px -143px;
 	}
 }
 .renhe-info-main{
@@ -188,18 +209,21 @@
 	.rh-circle-list {
 
 		.center-block();
-		width: 80%;
+		@media screen and (max-width: 990px){
+			width: 417px;
+		}
+		width: 821px;
 		margin-top: 45px;
 		margin-bottom: 28px;
 		> li {
 			float: left;
-			padding: 0 34px;
-			width:20%;
+			margin:0 17px;
+			width:102px;
 			> a {
 				position: relative;
 			}
-			> a:hover {
-				background-position-y:-282px;
+			> a:hover,&.active a {
+				background-position-y:-263px;
 				.rh-arrow {
 					display: inline-block;
 				}
@@ -213,7 +237,6 @@
 				margin-left: -11px;
 				border-top-color: #fff;
 				border-bottom: 0;
-				
 			}
 		}
 	}
@@ -228,11 +251,19 @@
 	padding: 10px 61px;
   	font-size: 18px;
 }
+.renhe-reg-login-o {
+	background:#fff;
+	color:#eb5441;
+}
 .renhe-app-download {
 	padding-top: 45px;
-	padding-bottom:32px;
+	padding-bottom:45px;
 	.clearfix();
 }
 .w-pur {
 	color:#7f5fc7;
+}
+.cover-bg.banner-trs {
+	-moz-transform: scaleX(1) scaleY(1);
+	-webkit-transform: scaleX(1) scaleY(1);
 }

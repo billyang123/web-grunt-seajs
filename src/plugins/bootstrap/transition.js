@@ -7,15 +7,15 @@
  * ======================================================================== */
 
 define(function(require, exports, module) {
-var $ = require("$");
-  function transitionEnd() {
-    var el = document.createElement('bootstrap')
-
-    var transEndEventNames = {
-      WebkitTransition : 'webkitTransitionEnd',
-      MozTransition    : 'transitionend',
-      OTransition      : 'oTransitionEnd otransitionend',
-      transition       : 'transitionend'
+	var $ = require("$");
+	function transitionEnd() {
+	    var el = document.createElement('bootstrap')
+	
+	    var transEndEventNames = {
+	      WebkitTransition : 'webkitTransitionEnd',
+	      MozTransition    : 'transitionend',
+	      OTransition      : 'oTransitionEnd otransitionend',
+	      transition       : 'transitionend'
     }
 
     for (var name in transEndEventNames) {

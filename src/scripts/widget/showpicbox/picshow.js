@@ -86,7 +86,7 @@ jQuery.fn.extend({
             	var imgSrc = $(item).attr("src");
             	options.data.push({
             		tiny:imgSrc,
-            		big:imgSrc.split("!")[0]
+            		big:$(item).attr("picurl")
             	})
             })
             obj.len = options.data.length;
@@ -99,6 +99,13 @@ jQuery.fn.extend({
         obj.tosmall = function(){
         	obj.showPicBox.empty();
         	obj.Enode.show();
+        }
+        obj.loadImage = function(url, callback, content){
+        	var img = new Image(); 
+        	img.src = url; 
+        	img.onload = function(){
+        		callback && typeof(callback) == "function" && callback.call(img);
+        	}
         }
         obj.toBig = function(){
         	obj.arginit();
@@ -115,7 +122,11 @@ jQuery.fn.extend({
                     obj.directionIndex($(this).data('index'));
                 });
             }else{
-            	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+options.data[0].big+'" id="'+obj.lgimgId+'">');
+            	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li')
+            	obj.loadImage(options.data[0].big,function(){
+            		this.id = obj.lgimgId;
+            		$(this).appendTo(obj.imgbox)
+            	})
                 obj.showPicBox.find('[action-type="seeBigPic"]').attr('href',options.data[0].big);
                 return;
             }
@@ -123,11 +134,21 @@ jQuery.fn.extend({
         }
 
         obj.toLeft = function(){
-            var index = obj.index>0? (obj.index-1) : 0;
+        	var index;
+        	if(obj.index > 0) {
+        		index = obj.index-1
+        	}else{
+        		return;
+        	}
             obj.directionIndex(index);
         }
         obj.toRight = function(){
-        	var index = obj.index<(obj.len-1)? (obj.index+1) : obj.len-1;
+        	var index;
+        	if( obj.index<(obj.len-1)) {
+        		index = obj.index+1
+        	}else{
+        		return;
+        	}
             obj.directionIndex(index);
         }
         obj.eventInit = function(){
@@ -165,8 +186,16 @@ jQuery.fn.extend({
         	owl.jumpTo(Math.floor(index/owl.orignalItems));
         	$(node_alis[obj.index]).removeClass("select");
         	$(node_alis[index]).addClass('select');
-        	
-        	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+_src+'" id="'+obj.lgimgId+'">');
+        	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li');
+        	obj.loadImage(_src,function(){
+        		var _img = this;
+        		obj.imgbox.fadeOut("fast",function(){
+        			obj.imgbox.empty();
+        			_img.id=obj.lgimgId;
+        			$(this).appendTo(_img)
+            		obj.imgbox.fadeIn("fast");
+            	})
+        	})
             obj.showPicBox.find('[action-type="seeBigPic"]').attr('href',_src);
             obj.index = index;
             callback && typeof(callback) == "function" && callback(index);

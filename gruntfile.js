@@ -195,6 +195,14 @@ module.exports = function(grunt) {
                     filter: "isFile"
                 },
                 {
+                    src: ["**/*.cur"],
+                    dest: assetsPath,
+                    expand: true,
+                    ext: ".cur",
+                    cwd: "src",
+                    filter: "isFile"
+                },
+                {
                     src: ["**/*.jpeg"],
                     dest: assetsPath,
                     expand: true,
@@ -215,6 +223,14 @@ module.exports = function(grunt) {
                     dest: assetsPath,
                     expand: true,
                     ext: ".eot",
+                    cwd: "src",
+                    filter: "isFile"
+                },
+                {
+                    src: ["**/*.otf"],
+                    dest: assetsPath,
+                    expand: true,
+                    ext: ".otf",
                     cwd: "src",
                     filter: "isFile"
                 },

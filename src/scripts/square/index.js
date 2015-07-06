@@ -29,7 +29,7 @@ define(function(require, exports, module) {
 		resizable: false,
 		width:386,
 		closeOnEscape: false,
-		position: { my: "left top", at: "left bottom",collision:'none'},
+		position: { my: "left top+8", at: "left bottom",collision:'none'},
 		dialogClass: "renhe-dialog-popover",
 		show:{ effect: "fadeIn", duration: 400 }
 	}
@@ -78,33 +78,37 @@ define(function(require, exports, module) {
 			})
 		},
 		ignore:function(e,d){
-			var _li = $(e.target).closest("li");
+			var _li = $(e.currentTarget).closest("li");
 			_li.remove();
 		},
 		setcoin:function(e,d){
-			var $this = $(e.target);
+			var $this = $(e.currentTarget);
 			var numnd = $('[node-type="coinNum"]');
 			var num = parseInt(numnd.attr("data-num"),10)+1;
 			numnd.attr("data-num",num).text(num);
 		},
 		willSubCommit:function(e){
-			$(e.target).closest('.min-article').find('textarea').val('\u56DE\u590D@'+$(e.target).data('atmsgname')+':').focus();
+			var cur_target = $(e.currentTarget);
+			var madiaPlan = cur_target.closest('[node-type="minArticle"]');
+			madiaPlan.find('[name="reMsgSenderSId"]').val(cur_target.attr('data-remsgsid'));
+			madiaPlan.find('[name="replyMessageObjectId"]').val(cur_target.attr('data-remsgobjectid'));
+			madiaPlan.find('textarea').val(i18n.reply([$(e.currentTarget).data('atmsgname')])).focus();
 		},
 		willcommit:function(e){
-			$(e.target).closest('.min-article').find('textarea').focus();
+			$(e.currentTarget).closest('.min-article').find('textarea').focus();
 		},
 		Commitfocus:function(e){
-			$(e.target).attr('rows',3).siblings(".commops").show();
+			$(e.currentTarget).attr('rows',3).css("height","70px").siblings(".commops").show();
 		},
 		beforenetworkrefresh:function(e){
-			$(e.target).find('.icon-refresh').addClass("icon-spin")
+			$(e.currentTarget).find('.icon-refresh').addClass("icon-spin")
 		},
 		networkrefresh:function(e,text){
-			var apnode = $(e.target).find('.icon-refresh').removeClass("icon-spin").closest(".search-network").find("ul");
+			var apnode = $(e.currentTarget).find('.icon-refresh').removeClass("icon-spin").closest(".search-network").find("ul");
 			this.htmlFadeIn(apnode,text,"html")
 		},
 		CommitDel:function(e,text){
-			var el = $(e.target).closest(".media-commont").removeClass("in");
+			var el = $(e.currentTarget).closest(".media-commont").removeClass("in");
 			setTimeout(function(){
 				el.remove();
 			},200)
@@ -136,21 +140,21 @@ define(function(require, exports, module) {
 			});
 		},
 		CommitSend:function(e,text){
-			var apnode = $(e.target).closest('[node-type="minArticle"]').find('[node-type="commonts"]');
+			var apnode = $(e.currentTarget).closest('[node-type="minArticle"]').find('[node-type="commonts"]');
 			this.htmlFadeIn(apnode,text,"appendTo");
-			if ($(e.target).is('form')) {
-				$(e.target).find('[type="submit"]').attr("disabled","disabled");
-		      return $(e.target)[0].reset();
+			if ($(e.currentTarget).is('form')) {
+				$(e.currentTarget).find('[type="submit"]').attr("disabled","disabled");
+		      return $(e.currentTarget)[0].reset();
 		    }
 		},
 		addtopic:function(e,text){
 			var apnode = $('[node-type="article"]');
 			this.htmlFadeIn(apnode,text,"prependTo");
-			if ($(e.target).is('form')) {
-		      $(e.target)[0].reset();
+			if ($(e.currentTarget).is('form')) {
+		      $(e.currentTarget)[0].reset();
 		    }
 			this.uploadReset();
-			self.addTopicEle.attr("disabled","disabled");
+			this.addTopicEle.attr("disabled","disabled");
 		},
 		uploadReset:function(){
 			var self = this;
@@ -165,18 +169,20 @@ define(function(require, exports, module) {
 	    	});
 		},
 		CommitCancel:function(e){
-			var _this = $(e.target);
+			var _this = $(e.currentTarget);
 			_this.closest('.commops').hide().siblings("textarea").val("").attr("rows",1);
 		},
-		like:function(e){
-			var $this = $(e.target);
-			numTarget = $this.find("span");
+		like:function(e,data){
+			var _data = $.parseJSON(data);
+			if(!_data.success) return;
+			var $this = $(e.currentTarget);
+			numTarget = $this.closest('[node-type="minArticle"]').find('[node-type="like-num"]');
 			numTarget.text(numTarget.text() * 1 + 1);
-			numTarget.show();
+			numTarget.closest(".cmt-s").append('<a href="/viewprofile.html?sid='+_data.memberSId+'">'+_data.memberName+'</a>').closest('.media-praise-info').slideDown();
 		},
 		moreCommitToggle:function(e,text){
 			var self = this;
-			var $this = $(e.target);
+			var $this = $(e.currentTarget);
 			var $toTarget = $this.closest('[node-type="minArticle"]').find('[node-type="commonts"]');
 			if($this.hasClass("icon-double-angle-up")){
 				$this.addClass("icon-double-angle-down").removeClass('icon-double-angle-up');
@@ -205,7 +211,7 @@ define(function(require, exports, module) {
 		},
 		removeFile:function(e){
 			var self = this;
-			var _this = $(e.target);
+			var _this = $(e.currentTarget);
 			$.ajax({
 				url:_this.attr('href'),
 				type:"POST",
@@ -236,6 +242,8 @@ define(function(require, exports, module) {
 			    paginationSpeed : 400,
 			    singleItem:true,
 			    navigation:false,
+			    autoHeight: true,
+			    lazyLoad : true,
 			    baseClass:"renhe-banner-carousel",
 			    stopOnHover : true
 			      // "singleItem:true" is a shortcut for:
@@ -247,10 +255,10 @@ define(function(require, exports, module) {
 			 
 			});
 			owlcs.owlCarousel({	 
-				autoPlay: 3000, //Set AutoPlay to 3 seconds
-				items : 4,
-				itemsDesktop : [1199,3],
-				itemsDesktopSmall : [979,3],
+				//autoPlay: 3000, //Set AutoPlay to 3 seconds
+				items : 5,
+				itemsDesktop : [1199,4],
+				itemsDesktopSmall : [979,4],
 				pagination:false,
 				stopOnHover : true
 			});
@@ -262,12 +270,12 @@ define(function(require, exports, module) {
 			})
 		},
 		qqWeiboShare:function(e){
-			var _this = e.target;
+			var _this = e.currentTarget;
 			var syncQqWeiboLivingRoom = $(_this).prop('checked');
 			jQuery.post('/ajax/changeSyncQqWeiboLivingRoom.html', {syncQqWeiboLivingRoom: syncQqWeiboLivingRoom});
 		},
 		weiboShare:function(e) {
-			var _this = e.target;
+			var _this = e.currentTarget;
 			var weiboBind = Boolean($(_this).attr('weiboBind'));
 			var sender = $(_this).attr('sender');
 			var domainName = $(_this).attr('domainName');
@@ -306,11 +314,11 @@ define(function(require, exports, module) {
 		},
 		textareaLimit:function(e,addFn){
 			var self = this;
-			var limitNum = $(e.target).data('limit-num');
-			var len = $(e.target).val().length;	
-			var btn = $(e.target).closest("form").find('[type="submit"]');
+			var limitNum = $(e.currentTarget).data('limit-num');
+			var len = $(e.currentTarget).val().length;	
+			var btn = $(e.currentTarget).closest("form").find('[type="submit"]');
 
-			var target = $('[data-node="'+$(e.target).attr('action-type')+'"]');
+			var target = $('[data-node="'+$(e.currentTarget).attr('action-type')+'"]');
 			var num = limitNum-len;
 			var adds = true;
 			if(addFn && typeof(addFn) == "function"){
@@ -378,7 +386,7 @@ define(function(require, exports, module) {
 				title: i18n.chooseFace.title,
 				width:542,
 				position: {
-					my: "left top",
+					my: "left top+8",
 					at: "left bottom",
 					of: els
 				},
@@ -417,15 +425,18 @@ define(function(require, exports, module) {
 		uploadInit:function(els){
 			var self = this;
 			var url = '/ajax/uploadMessageBoardImage.html';
+			var _index = 0;
 		    $('#fileupload').fileupload({
 		        url: $(els).attr("href")||url,
 		        dataType: 'json',
 		        add: function (e, data) {
-		        	var str = '';		        	
+		        	var str = '';
 		        	$.each(data.files,function(index,item){
-		        		str+='<li class="file-item fileid-'+fileNum+'"><p class="text-center"><i class="icon-spinner icon-spin"></i></p><p class="text-overflow">'+item.name+'</p></li>';
+		        		
+		        		str+='<li class="file-item fileid-' + _index + '"><p class="text-center"><i class="icon-spinner icon-spin"></i></p><p class="text-overflow">'+item.name+'</p></li>';
 		        	})
-		        	$(this).closest('li').before(str)
+		        	$(this).closest('li').before(str);
+		        	_index++;
 		            data.submit();
 		        },
 		        progressall: function (e, data) {
@@ -433,12 +444,16 @@ define(function(require, exports, module) {
 		            //console.log(e, data)
 		        }
 		    }).on('fileuploaddone',function(e, data){
-		    	
-		    	
-		    	self.addTopicEle.removeAttr("disabled");
 		    	$('#fileupload').fileupload('option','formData',{
-		    		publicationId:data.result.publicationId
+		    		publicationId:data.result.publicationId||""
 		    	});
+		    	if(!data.result.success){
+		    		$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).remove();
+		    		_index--;
+		    		return;
+		    	}
+		    	self.addTopicEle.removeAttr("disabled");
+		    	
 		    	$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).html('<div><a href="/ajax/deleteMessageBoardImage.html?publicationId='+ data.result.publicationId +'&resourceId='+ data.result.resourceId +'" class="delimg icon-remove" action-type="removeFile"></a><img src="'+data.result.picUrl+'"/></div>')
 		    	fileNum +=1;
 		    	$(e.currentTarget).closest('.upload-img-popover').find('[node-type="filenum"]').html(i18n.upload.text([fileNum,9-fileNum]))
@@ -450,13 +465,14 @@ define(function(require, exports, module) {
 		    });
 		},
 		addMessageBoardFacePic:function(e){
-			this.faceOvery(e.target);
+			this.faceOvery(e.currentTarget);
 			return false;
 		},
 		showUploadProver:function(e){
-			this.uploadOvery(e.target);
+			this.uploadOvery(e.currentTarget);
 		}
 	
 	}
-	new renheWidget('body');
+	var index = new renheWidget('body');
+	return index;
 })

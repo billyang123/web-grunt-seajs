@@ -33,6 +33,9 @@
 		ul {
 			> li {
 				margin: 0 0 0 -1px;
+				&:first-child span {
+					padding-left:0;
+				}
 				> span {
 					display: block;
 					margin: 5px 0;
@@ -43,6 +46,9 @@
 					> a {
 						text-decoration: none;
 						color: #333;
+						&:hover {
+							color:#eb5441;
+						}
 					}
 				}
 			}
@@ -112,7 +118,9 @@
 				}
 				img {
 					vertical-align:middle;
-					width:50px;
+					max-width: 46px;
+  					max-height: 46px;
+					
 				}
 			}
 		}

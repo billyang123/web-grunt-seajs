@@ -5,7 +5,7 @@ define(function(require, exports, module) {
 	Renhe = {};
 	Renhe.alert = function(tips){
 		$('<p>'+tips+'</p>').dialog({
-	      title: "ÌבÊ¾",
+	      title: i18n.title.tip,
 	      width: 250,
 	      buttons: [
 	        {

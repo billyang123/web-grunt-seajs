@@ -44,15 +44,6 @@
         timeout: 20000,
         debug: true
     };
-
-    if (typeof process === "undefined") {
-        config.paths.gallery = "https://a.alipayobjects.com/gallery";
-        config.paths.arale = 'https://a.alipayobjects.com/arale';
-        config.paths.alipay = 'https://a.alipayobjects.com/alipay';
-        config.paths.platform = "https://s.tbcdn.cn/g/platform";
-        config.paths.alinw = "https://s.tbcdn.cn/g/alinw";
-        config.paths.alice = "https://a.alipayobjects.com/alice";
-    }
     if (root.seajs) {
         root.seajs.config(config);
     }
