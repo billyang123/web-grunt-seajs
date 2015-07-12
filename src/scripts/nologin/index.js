@@ -17,13 +17,12 @@ define(function(require, exports, module) {
     $.validator.setDefaults({    
         submitHandler: function(form) { form.submit(); },
         errorPlacement: function(error, element) {
-       
             if(element.attr('aria-invalid') == 'false'){
                 return
             }
             var errorDocArr = [
                 '<div class="alert alert-danger alert-dismissible fade in" role="alert">',
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">¡Á</span></button>',
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">x</span></button>',
                 '<p>'+error.html()+'</p>',
                 '</div>'
             ]
@@ -32,10 +31,29 @@ define(function(require, exports, module) {
         success:function(label,elem){
             $(elem).closest('form').find('.js-renhe-error').empty();
         }
-    });  
-    $('.rh-circle-list a').mouseover(function(e) {
-        e.preventDefault()
+    });
+    var idx = 0;
+    var sde = $('.rh-circle-list a');
+    var tmFn =function(){ 
+    	return setInterval(function(){
+	    	$(sde[idx]).tab('show')
+	    	idx==sde.length-1 ? idx=0:idx++;
+	    },4000)
+    }
+    var tm = tmFn();
+    sde.mouseenter(function(e) {
+    	idx = sde.index(this)
         $(this).tab('show')
+    }).on("shown.bs.tab",function(e){ 	
+    	$($(e.relatedTarget).attr('data-tg')).fadeOut(function(){
+    		$($(e.target).attr('data-tg')).fadeIn();
+    	});
+    })
+    $('.rh-circle-list').mouseenter(function(){
+    	clearInterval(tm)
+    })
+    $('.rh-circle-list').mouseleave(function(e){
+    	tm = tmFn();
     })
     var validateMessage = {         
         email:{     
@@ -54,5 +72,6 @@ define(function(require, exports, module) {
     $('#renheLogin').validate({
         messages: validateMessage
     });
+    
     return $;
 })

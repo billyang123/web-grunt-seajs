@@ -83,6 +83,12 @@
 //}
 .btn-danger {
   .renhe-button-variant(#fff; #eb5441;#f65f4c;#e93f2a;#f65f4c);
+  &.disabled,
+  &[disabled] {
+  	.opacity(1);
+  	background-color:#f29084;
+  	border-color:#f29084;
+  }
 }
 
 // Link buttons

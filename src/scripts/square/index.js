@@ -170,7 +170,7 @@ define(function(require, exports, module) {
 		},
 		CommitCancel:function(e){
 			var _this = $(e.currentTarget);
-			_this.closest('.commops').hide().siblings("textarea").val("").attr("rows",1);
+			_this.closest('.commops').hide().siblings("textarea").val("").attr("rows",1).css("height","30px");
 		},
 		like:function(e,data){
 			var _data = $.parseJSON(data);

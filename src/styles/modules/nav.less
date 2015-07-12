@@ -1,5 +1,5 @@
 .renhe-nav {
-	background-color: #313131;
+	/*background-color: #323a45;*/
 	.container {
 		padding-left: 9px;
   		padding-right: 9px;
@@ -25,7 +25,7 @@
 		border-radius: 0;
 		@media (min-width: 995px){
 			.navbar-nav {
-				margin-left:5%;
+				margin-left:8%;
 			}
 		}
 		.navbar-nav > li > a {
@@ -33,9 +33,6 @@
 		}
 		.navbar-nav > .active > a {
 			background-color: transparent;
-			> .rh-arrow {
-				display: inline-block;
-			}
 		}
 		.navbar-toggle {
 			margin-top: 20px;
@@ -43,7 +40,6 @@
 		.navbar-collapse {
 			padding-top: 14px;
 			max-width: 980px;
-			position: relative;
 		}
 		.navbar-brand {
 			height: auto;
@@ -77,11 +73,11 @@
 			padding: 0px 10px;
 			input.form-control {
 				width: 220px;
-				padding-right:38px;
-				border-radius: 16px;
-				background-color: #f2f2f2;
+				padding-left:38px;
+				border-radius: 2px;
+				background-color: #eee;
 				border: 0;
-				color: #a0a0a0;
+				/*color: #a0a0a0;*/
 				box-shadow: inherit;
 				&:focus {
 					border: 0;
@@ -92,7 +88,7 @@
 			}
 			.btn-link {
 				position: absolute;
-				right: 0;
+				left: 0;
 				z-index: 10;
 				top: 3px;
 				color: #a9a8a8;
@@ -113,13 +109,45 @@
 		}
 	}
 	.caret {
-	  border-top-width: 6px;
-	  border-right-width: 6px;
-	  border-left-width: 6px;
+	  margin-left:4px;
 	}
 	.navbar-nav>li>.dropdown-menu {
 	  margin-top: 0;
 	  border-top-right-radius: 4px;
 	  border-top-left-radius: 4px;
+	}
+	.znx-link {
+		position: relative;
+  		a {
+  			position: absolute;
+		  	display: inline-block;
+		  	width: 96px;
+		  	color: #fff;
+		  	top:14px;
+		  	right:-96px;
+		  	&:hover {
+		  		color:#888;
+		  	}
+  		}
+  		a:hover span{
+  			color:#fff;
+  		}
+  		em {
+  			font-style: normal;
+  			font-weight:700;
+  		}
+  		.znx-num {
+  			display: inline-block;
+  			border-radius:2px;
+  			background:#eb5441;
+  			padding: 1px 5px;
+  			font-size: 10px;
+  			margin-left: 4px;
+  			line-height: 15px;
+			-webkit-animation: like .5s linear;
+			-moz-animation: like 0.5s linear;
+			-o-animation: like 0.5s linear;
+			-ms-animation: like 0.5s linear;
+  		}
 	}
 }

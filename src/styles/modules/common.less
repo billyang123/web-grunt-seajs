@@ -1,10 +1,13 @@
 @import "mixins.less";
+//@font-face {font-family:FZLTZHUNHJW; src: url("/fonts/FZLTZHUNHJW.ttf")}
 body {
     -webkit-font-smoothing: antialiased;
-    background-color: #f2f2f2;
+    /*background-color: #f2f2f2;*/
+    color:#000;
+    /*font-family: tahoma,arial,'Hiragino Sans GB',sans-serif;*/
+    /*font-family:FZLTZHUNHJW;*/
 }
 a:hover {
-	color:#eb5441;
 	outline: 0 !important;
 	text-decoration: none !important;	
 }
@@ -14,8 +17,11 @@ a:visited,
 a:active {
 	outline: 0 !important;
 	text-decoration: none !important;	
+	
 }
-
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  color: #a0a0a0 !important;
+}
 ul {
 	list-style:none;
 	padding:0;
@@ -131,9 +137,9 @@ ul {
 	&-cog {
 		width:25px;
 		height:25px;
-		background-position:2px -29px;
+		background-position:5px -29px;
 		&:hover {
-			background-position:-39px -29px;
+			background-position:-36px -29px;
 		}
 	}
 	&-face {
@@ -150,6 +156,7 @@ ul {
 		width:17px;
 		height:18px;
 		background-position:-2px -197px;
+		margin-top:3px;
 	}
 	&-heart {
 		width:18px;

@@ -2,6 +2,7 @@ var fs = require("fs");
 var path = require("path");
 //var iconv = require('iconv-lite');
 var assetsPath = "../assets";
+var version = '';//new Date().getTime();
 //var assetsPath = "../../bulid";
 module.exports = function(grunt) {
 	grunt.file.defaultEncoding = 'gbk';
@@ -17,7 +18,12 @@ module.exports = function(grunt) {
         grunt.log.error("Config file: " + configFile + " does not exist");
         return;
     }
-
+    if (!fs.existsSync("package.json")) {
+        grunt.log.error("package file does not exist");
+        return;
+    }
+    var packfile = fs.readFileSync("package.json","utf-8");
+    var packJson = eval("(" + packfile + ")");
     var configFileContent = fs.readFileSync(configFile,"utf-8");
     //configFileContent = iconv.decode(configFileContent)
     configFileContent = eval(configFileContent);
@@ -140,7 +146,7 @@ module.exports = function(grunt) {
             files: [
                 {
                     src: "src/styles/app.less",//"src/styles/**/*.less",
-                    dest: assetsPath+"/styles/app.css"
+                    dest: assetsPath+"/styles/app-"+version+".css"
                 }
             ]
         },

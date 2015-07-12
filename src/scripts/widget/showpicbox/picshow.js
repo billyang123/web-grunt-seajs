@@ -100,7 +100,7 @@ jQuery.fn.extend({
         	obj.showPicBox.empty();
         	obj.Enode.show();
         }
-        obj.loadImage = function(url, callback, content){
+        obj.loadImage = function(url, callback){
         	var img = new Image(); 
         	img.src = url; 
         	img.onload = function(){
@@ -122,11 +122,7 @@ jQuery.fn.extend({
                     obj.directionIndex($(this).data('index'));
                 });
             }else{
-            	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li')
-            	obj.loadImage(options.data[0].big,function(){
-            		this.id = obj.lgimgId;
-            		$(this).appendTo(obj.imgbox)
-            	})
+            	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li').html('<img src="'+options.data[0].big+'" id="'+obj.lgimgId+'">');
                 obj.showPicBox.find('[action-type="seeBigPic"]').attr('href',options.data[0].big);
                 return;
             }
@@ -187,14 +183,9 @@ jQuery.fn.extend({
         	$(node_alis[obj.index]).removeClass("select");
         	$(node_alis[index]).addClass('select');
         	obj.imgbox = obj.showPicBox.find('[node-type="picShow"] li');
-        	obj.loadImage(_src,function(){
-        		var _img = this;
-        		obj.imgbox.fadeOut("fast",function(){
-        			obj.imgbox.empty();
-        			_img.id=obj.lgimgId;
-        			$(this).appendTo(_img)
-            		obj.imgbox.fadeIn("fast");
-            	})
+        	obj.imgbox.fadeOut("fast",function(){
+        		obj.imgbox.html('<img src="'+_src+'" id="'+obj.lgimgId+'">');
+        		obj.imgbox.fadeIn("fast");
         	})
             obj.showPicBox.find('[action-type="seeBigPic"]').attr('href',_src);
             obj.index = index;
