@@ -146,7 +146,7 @@ module.exports = function(grunt) {
             files: [
                 {
                     src: "src/styles/app.less",//"src/styles/**/*.less",
-                    dest: assetsPath+"/styles/app-"+version+".css"
+                    dest: assetsPath+"/styles/app"+version+".css"
                 }
             ]
         },

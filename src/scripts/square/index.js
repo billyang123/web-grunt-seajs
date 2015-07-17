@@ -98,7 +98,7 @@ define(function(require, exports, module) {
 			$(e.currentTarget).closest('.min-article').find('textarea').focus();
 		},
 		Commitfocus:function(e){
-			$(e.currentTarget).attr('rows',3).css("height","70px").siblings(".commops").show();
+			$(e.currentTarget).attr('rows',2).css("height","50px").siblings(".commops").show();
 		},
 		beforenetworkrefresh:function(e){
 			$(e.currentTarget).find('.icon-refresh').addClass("icon-spin")
@@ -138,10 +138,11 @@ define(function(require, exports, module) {
 			node.slideDown("fast",function(){
 				$(this).addClass('in');
 			});
+			return node;
 		},
 		CommitSend:function(e,text){
 			var apnode = $(e.currentTarget).closest('[node-type="minArticle"]').find('[node-type="commonts"]');
-			this.htmlFadeIn(apnode,text,"appendTo");
+			this.htmlFadeIn(apnode,text,"prependTo").removeClass("more-notice");
 			if ($(e.currentTarget).is('form')) {
 				$(e.currentTarget).find('[type="submit"]').attr("disabled","disabled");
 		      return $(e.currentTarget)[0].reset();
@@ -187,13 +188,13 @@ define(function(require, exports, module) {
 			if($this.hasClass("icon-double-angle-up")){
 				$this.addClass("icon-double-angle-down").removeClass('icon-double-angle-up');
 				if($this.data("moreCommit")) {
-					$toTarget.find(".fade").removeClass("in").slideToggle();
+					$toTarget.find(".more-notice").removeClass("in").slideToggle();
 					return;
 				}
 			}else{
 				$this.addClass("icon-double-angle-up").removeClass('icon-double-angle-down');
 				if($this.data("moreCommit")) {
-					$toTarget.find(".fade").slideToggle("fast",function(){
+					$toTarget.find(".more-notice").slideToggle("fast",function(){
 						$(this).addClass("in");
 					});
 					return;
@@ -294,7 +295,7 @@ define(function(require, exports, module) {
 		        {
 		          text: i18n.btn.confirm,
 		          click: function() {
-		        	$.post("/ajax/shareMessageBoard.html", $(this).serializeArray(), function(html) {
+		        	$.post($(this).attr("action"), $(this).serializeArray(), function(html) {
 		        		var apnode = $('[node-type="article"]');
 		        		self.htmlFadeIn(apnode, html, "prependTo");
 		        	});
@@ -424,10 +425,11 @@ define(function(require, exports, module) {
 		},
 		uploadInit:function(els){
 			var self = this;
-			var url = '/ajax/uploadMessageBoardImage.html';
+			var upurl = $(els).attr("data-upurl");
 			var _index = 0;
+			var delurl = $(els).attr("data-delurl");
 		    $('#fileupload').fileupload({
-		        url: $(els).attr("href")||url,
+		        url: upurl,
 		        dataType: 'json',
 		        add: function (e, data) {
 		        	var str = '';
@@ -454,7 +456,7 @@ define(function(require, exports, module) {
 		    	}
 		    	self.addTopicEle.removeAttr("disabled");
 		    	
-		    	$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).html('<div><a href="/ajax/deleteMessageBoardImage.html?publicationId='+ data.result.publicationId +'&resourceId='+ data.result.resourceId +'" class="delimg icon-remove" action-type="removeFile"></a><img src="'+data.result.picUrl+'"/></div>')
+		    	$(e.currentTarget).closest('li').siblings('li.fileid-'+fileNum).html('<div><a href="'+delurl+'?publicationId='+ data.result.publicationId +'&resourceId='+ data.result.resourceId +'" class="delimg icon-remove" action-type="removeFile"></a><img src="'+data.result.picUrl+'"/></div>')
 		    	fileNum +=1;
 		    	$(e.currentTarget).closest('.upload-img-popover').find('[node-type="filenum"]').html(i18n.upload.text([fileNum,9-fileNum]))
 		    	$(".js-upload-id").val(data.result.publicationId);

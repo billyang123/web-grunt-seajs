@@ -54,23 +54,30 @@ define(function(require, exports, module) {
     })
     $('.rh-circle-list').mouseleave(function(e){
     	tm = tmFn();
-    })
-    var validateMessage = {         
-        email:{     
-            required: validateMessage.email.required,
-            renheAccount:validateMessage.email.renheAccount
-        },     
-        password:{     
-            required: validateMessage.password.required,
-            minlength:validateMessage.password.minlength([6])
-        }
-    }
-    
+    })    
     $('#renheRegister').validate({
-        messages: validateMessage
+        messages: {
+        	email:{     
+                required: validateMessage.email.required,
+                renheAccount:validateMessage.email.renheAccount
+            },     
+            password:{     
+                required: validateMessage.password.required,
+                minlength:validateMessage.password.minlength([6])
+            }
+        }
     });
     $('#renheLogin').validate({
-        messages: validateMessage
+        messages: {
+        	email:{     
+                required: validateMessage.email.required,
+                renheAccount:validateMessage.email.renheAccount
+            },     
+            pass:{     
+                required: validateMessage.password.required,
+                minlength:validateMessage.password.minlength([6])
+            }
+        }
     });
     
     return $;

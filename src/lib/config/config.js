@@ -7,11 +7,12 @@
 		    'locale': 'zh-cn'
 		},
         alias: {
+            // lib
+            "$": 'lib/jquery/jquery-1-7-1-gbk-min.js',
+            "jQuery": 'lib/jquery/jquery-1-7-1-gbk-min.js',
             // plugins
             "handlebars": 'plugins/handlebars/handlebars',
             "handlebars-helper":'plugins/handlebars/handlebars-helper',
-            "$": 'lib/jquery/jquery-1-7-1-gbk-min.js',
-            "jQuery": 'lib/jquery/jquery-1-7-1-gbk-min.js',
             "metadata": 'plugins/jquery-metadata/jquery-metadata',
             'jquery-validate':'plugins/jquery-validate/jquery-validate',
             "tab":'plugins/bootstrap/tab',
@@ -25,8 +26,10 @@
             "jquery.fileupload":'plugins/fileupload/jqueryfileupload',
             "jquery.iframe-transport":'plugins/fileupload/jquery-iframe-transport',
             "ajaxRails":'plugins/jquery-ujs/jquery-rails',
+            "sticky":'plugins/renhe-uk/sticky',
+            //widget
             "Renhe":'scripts/widget/renhe/renhe',
-            
+            //utilsPath
             "common":"utilsPath/common/common"
         },
         paths: {

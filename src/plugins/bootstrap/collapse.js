@@ -1,10 +1,6 @@
 define(function(require, exports, module) {
-+function ($) {
-  'use strict';
-
-  // COLLAPSE PUBLIC CLASS DEFINITION
-  // ================================
-
+  var $ = require("$");
+  require("transition");
   var Collapse = function (element, options) {
     this.$element      = $(element)
     this.options       = $.extend({}, Collapse.DEFAULTS, options)
@@ -81,7 +77,7 @@ define(function(require, exports, module) {
     var scrollSize = $.camelCase(['scroll', dimension].join('-'))
 
     this.$element
-      .one('bsTransitionEnd', $.proxy(complete, this))
+      .unbind('bsTransitionEnd').one('bsTransitionEnd', $.proxy(complete, this))
       .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
   }
 
@@ -119,7 +115,7 @@ define(function(require, exports, module) {
 
     this.$element
       [dimension](0)
-      .one('bsTransitionEnd', $.proxy(complete, this))
+      .unbind('bsTransitionEnd').one('bsTransitionEnd', $.proxy(complete, this))
       .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
   }
 
@@ -200,5 +196,4 @@ define(function(require, exports, module) {
     Plugin.call($target, option)
   })
 
-}(jQuery);
 })

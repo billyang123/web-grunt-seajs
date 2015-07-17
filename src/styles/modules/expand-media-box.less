@@ -60,6 +60,7 @@
 		li {
 			width: 100%;
 			display: none;
+			position: relative;
 			&.active {
 				display: inline-block;
 				img,canvas {
@@ -125,6 +126,13 @@
 			}
 		}
 	}
+}
+img.load-img {
+	position: absolute;
+	left: 50%;
+	margin-left: -16px;
+	top: 50%;
+	margin-top: -16px;
 }
 .leftcursor {
 	cursor: url(/images/pic_prev.cur?id=1366091579494),auto;

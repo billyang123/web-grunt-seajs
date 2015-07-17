@@ -1,5 +1,6 @@
 define(function(require, exports, module) {
 	var $ = require("$");
+	require("transition");
 	var Tab = function (element) {
 	    // jscs:disable requireDollarBeforejQueryAssignment
 	    this.element = $(element)
@@ -90,8 +91,7 @@ define(function(require, exports, module) {
 	    }
 
 	    $active.length && transition ?
-	      $active
-	        .one('bsTransitionEnd', next)
+	      $active.unbind('bsTransitionEnd').one('bsTransitionEnd', next)
 	        .emulateTransitionEnd(Tab.TRANSITION_DURATION) :
 	      next()
 
